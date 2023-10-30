@@ -6,7 +6,7 @@
 
 ### 一、认领
 
-首先查看[整体进度](https://github.com/apachecn/zeppelin-doc-zh/)，确认没有人认领了你想认领的章节。
+首先查看[整体进度](https://github.com/apachecn/huggingface-doc-zh/)，确认没有人认领了你想认领的章节。
 
 然后回复 ISSUE 来认领章节，注明“章节 + QQ 号”。
 
@@ -29,20 +29,4 @@
 
 ## 贡献者
 
-### Kafka 1.0.0 中文文档贡献者
-
-* [@那伊抹微笑](https://github.com/wangyangting)
-* [@mikechengwei](https://github.com/mikechengwei)
-* [@lc3030](https://github.com/lc3030)
-* [@Elena7](https://github.com/Elena7)
-* [@Raymoonkie](https://github.com/Raymoonkie)
-* [@gongchu](https://github.com/gongchu)
-* [@Islotus](https://github.com/Islotus)
-* [@coboe](https://github.com/coboe)
-* [@Qanora](https://github.com/Qanora)
-* [@sirwangshuai](https://github.com/sirwangshuai)
-* [@hyper-xx](https://github.com/hyper-xx)
-* [@aspoman](https://github.com/aspoman)
-* [@chenliusuo](https://github.com/chenliusuo)
-* [@mantianstar](https://github.com/mantianstar) 
-
+* [@片刻小哥哥](https://github.com/jiangzhonglian)

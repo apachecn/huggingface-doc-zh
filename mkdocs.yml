@@ -1,9 +1,9 @@
-site_name: 【布客】Zeppelin 中文翻译
-site_url: https://zeppelin.apachecn.org
+site_name: 【布客】huggingface 中文翻译
+site_url: https://huggingface.apachecn.org
 
 # Repository
-repo_name: apachecn/zeppelin-doc-zh
-repo_url: https://github.com/apachecn/zeppelin-doc-zh
+repo_name: apachecn/huggingface-doc-zh
+repo_url: https://github.com/apachecn/huggingface-doc-zh
 
 theme:
   name: material
@@ -27,19 +27,19 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - "Zeppelin 中文文档": "index.md"
+  - "huggingface 中文文档": "index.md"
   - "快速入门":
-    - "什么是Apache Zeppelin?": "2.md"
+    - "什么是Apache huggingface?": "2.md"
     - "安装": "3.md"
     - "配置": "4.md"
-    - "探索Apache Zeppelin UI": "5.md"
+    - "探索Apache huggingface UI": "5.md"
     - "教程": "6.md"
     - "动态表单": "7.md"
     - "发表你的段落": "8.md"
-    - "自定义Zeppelin主页": "9.md"
-    - "升级Zeppelin版本": "10.md"
+    - "自定义huggingface主页": "9.md"
+    - "升级huggingface版本": "10.md"
     - "从源码编译": "11.md"
-    - "使用Flink和Spark Clusters安装Zeppelin教程": "12.md"
+    - "使用Flink和Spark Clusters安装huggingface教程": "12.md"
   - "贡献者": "contrib.md"
   - "关于我们": "https://www.apachecn.org/about/"
   - "加入我们": "https://www.apachecn.org/join/"
