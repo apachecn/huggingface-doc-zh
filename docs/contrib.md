@@ -26,7 +26,3 @@
 + `pull request`
 
 请见 [Github 入门指南](https://interview.apachecn.org/GitHub/)。
-
-## 贡献者
-
-* [@片刻小哥哥](https://github.com/jiangzhonglian)
