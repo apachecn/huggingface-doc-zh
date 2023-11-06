@@ -15,7 +15,7 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/controlling_generation>
 
-开始写原始页面的翻译内容(翻译完后请删除这个模版注释就行)
+开始写原始页面的翻译内容
 
 
 
@@ -37,9 +37,11 @@ loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
 2. 公式参考:
 
 1) 无需换行的写法: 
+
 $\sqrt{w^T*w}$
 
 2) 需要换行的写法：
+
 $$
 \sqrt{w^T*w}
 $$
@@ -47,3 +49,5 @@ $$
 3. 图片参考(用图片的实际地址就行):
 
 <img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+
+4. **翻译完后请删除上面所有模版内容就行**
