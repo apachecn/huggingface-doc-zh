@@ -33,94 +33,18 @@ NFC 和 NFKC）、小写等……的特殊性
  是可选的。
 
 
-|
- 姓名
-  |
- 描述
-  |
- 例子
-  |
+| 	 Name	  | 	 Description	  | 	 Example	  |
 | --- | --- | --- |
-|
- NFD
-  |
- NFD unicode 标准化
-  | |
-|
- NFKD
-  |
- NFKD unicode 标准化
-  | |
-|
- 近场通信
-  |
- NFC unicode 标准化
-  | |
-|
- NFKC
-  |
- NFKC unicode 标准化
-  | |
-|
- 小写
-  |
- 将所有大写字母替换为小写字母
-  |
- 输入：
- `你好ὈΔYΣΣΕΎΣ`
-
- 输出：
- `你好`
- ὀδυσσεύς`
-  |
-|
- 条
-  |
- 删除输入指定侧（左侧、右侧或两侧）的所有空白字符
-  |
- 输入：
- ``````
- 你好
- ``````
-
- 输出：
- `“嗨”` |
-|
- 脱衣口音
-  |
- 删除 unicode 中的所有重音符号（与 NFD 一起使用以保持一致性）
-  |
- 输入：
- 'é'
-
- 输出：
- `e` |
-|
- 代替
-  |
- 替换自定义字符串或正则表达式并用给定内容更改它
-  | `替换（“a”，“e”）`
- 将会像这样：
- 
- 输入：
- `“香蕉”`
-
- 输出：
- `“贝内”` |
-|
- 伯特标准化器
-  |
- 提供原始 BERT 中使用的 Normalizer 的实现。可以设置的选项有：
- * 干净\_文本
-* 句柄\_chinese\_chars
-* 去掉\_重音
-* 小写
- | |
-|
- 顺序
-  |
- 组成多个标准化器，这些标准化器将按提供的顺序运行
-  | `序列（[NFKC（），小写（）]）` |
+| 	 NFD	  | 	 NFD unicode normalization	  |  |
+| 	 NFKD	  | 	 NFKD unicode normalization	  |  |
+| 	 NFC	  | 	 NFC unicode normalization	  |  |
+| 	 NFKC	  | 	 NFKC unicode normalization	  |  |
+| 	 Lowercase	  | 	 Replaces all uppercase to lowercase	  | 	 Input:	 `HELLO ὈΔΥΣΣΕΎΣ` 		 Output:	 `hello` 	 ὀδυσσεύς`	  |
+| 	 Strip	  | 	 Removes all whitespace characters on the specified sides (left, right or both) of the input	  | 	 Input:	 `"` 	 hi	 `"` 		 Output:	 `"hi"`  |
+| 	 StripAccents	  | 	 Removes all accent symbols in unicode (to be used with NFD for consistency)	  | 	 Input:	 `é` 		 Ouput:	 `e`  |
+| 	 Replace	  | 	 Replaces a custom string or regexp and changes it with given content	  | `Replace("a", "e")` 	 will behave like this:	 	 Input:	 `"banana"` 		 Ouput:	 `"benene"`  |
+| 	 BertNormalizer	  | 	 Provides an implementation of the Normalizer used in the original BERT. Options that can be set are:	 * clean\_text	* handle\_chinese\_chars	* strip\_accents	* lowercase	 |  |
+| 	 Sequence	  | 	 Composes multiple normalizers that will run in the provided order	  | `Sequence([NFKC(), Lowercase()])`  |
 
 
 ## 预分词器
@@ -152,126 +76,17 @@ NFC 和 NFKC）、小写等……的特殊性
 字节级）
 
 
-|
- 姓名
-  |
- 描述
-  |
- 例子
-  |
+| 	 Name	  | 	 Description	  | 	 Example	  |
 | --- | --- | --- |
-|
- 字节级
-  |
- 在将所有字节重新映射到一组可见字符的同时按空格进行拆分。这项技术由 OpenAI 与 GPT-2 一起引入，并具有一些或多或少的不错的特性：
- * 由于它映射到字节，因此使用它的分词器只需要
- **256**
- 字符作为初始字母表（一个字节可以拥有的值的数量），而不是 130,000 多个 Unicode 字符。
-* 上一点的结果是，绝对没有必要使用这个未知的令牌，因为我们可以用 256 个令牌来表示任何东西（Youhou！！🎉🎉）
-* 对于非 ASCII 字符，它完全不可读，但它仍然有效！
- |
- 输入：
- ``“你好，我的朋友，你好吗？”
-
- 输出：
- `“你好”，“我的”，“朋友”，“，”，“如何”，“是”，“你”，“？”` |
-|
- 空白
-  |
- 在单词边界上分割（使用以下正则表达式：
- `\w+|[^\w\s]+` |
- 输入：
- ``“你好！”
-
- 输出：
- `“你好”，“那里”，“！”` |
-|
- 空白分割
-  |
- 在任何空白字符上分割
-  |
- 输入：
- ``“你好！”
-
- 输出：
- `“你好”，“那里！”` |
-|
- 标点
-  |
- 将隔离所有标点字符
-  |
- 输入：
- 「喂？」
-
- 输出：
- `“你好”，“？”` |
-|
- 元空间
-  |
- 按空格分割并用特殊字符“ ” (U+2581) 替换它们
-  |
- 输入：
- ``“你好”`
-
- 输出：
- `“你好”，“那里”` |
-|
- 字符分隔符分割
-  |
- 根据给定的字符进行分割
-  |
- 示例为
- `x`
- :
- 
- 输入：
- `“你好”`
-
- 输出：
- `“你好”，“那里”` |
-|
- 数字
-  |
- 将数字与任何其他字符分开。
-  |
- 输入：
- `“你好123那里”`
-
- 输出：
- `“你好”，“123”，“那里”` |
-|
- 分裂
-  |
- 多功能预标记器，可根据提供的模式和提供的行为进行分割。如有必要，可以反转该图案。
- * 模式应该是自定义字符串或正则表达式。
-* 行为应该是以下之一：
-+ 删除
-+ 隔离
-+ 与\_合并\_上一个
-+ 与\_next 合并
-+ 连续的
-* invert 应该是一个布尔标志。
- |
- 模式示例 =
- 
- , 行为 =
- `“孤立”`
- , 反转 =
- ‘假’
- :
- 
- 输入：
- ``“你好，你好吗？”
-
- 输出：
- `“你好，”，“”，“怎么样”，“”，“是”，“”，“你？”` |
-|
- 顺序
-  |
- 让您可以创作多个
- `预分词器`
- 将按照给定的顺序运行
-  | `序列（[标点符号（），WhitespaceSplit（）]）` |
+| 	 ByteLevel	  | 	 Splits on whitespaces while remapping all the bytes to a set of visible characters. This technique as been introduced by OpenAI with GPT-2 and has some more or less nice properties:	 * Since it maps on bytes, a tokenizer using this only requires	 **256** 	 characters as initial alphabet (the number of values a byte can have), as opposed to the 130,000+ Unicode characters.	* A consequence of the previous point is that it is absolutely unnecessary to have an unknown token using this since we can represent anything with 256 tokens (Youhou!! 🎉🎉)	* For non ascii characters, it gets completely unreadable, but it works nonetheless!	 | 	 Input:	 `"Hello my friend, how are you?"` 		 Ouput:	 `"Hello", "Ġmy", Ġfriend", ",", "Ġhow", "Ġare", "Ġyou", "?"`  |
+| 	 Whitespace	  | 	 Splits on word boundaries (using the following regular expression:	 `\w+|[^\w\s]+`  | 	 Input:	 `"Hello there!"` 		 Output:	 `"Hello", "there", "!"`  |
+| 	 WhitespaceSplit	  | 	 Splits on any whitespace character	  | 	 Input:	 `"Hello there!"` 		 Output:	 `"Hello", "there!"`  |
+| 	 Punctuation	  | 	 Will isolate all punctuation characters	  | 	 Input:	 `"Hello?"` 		 Ouput:	 `"Hello", "?"`  |
+| 	 Metaspace	  | 	 Splits on whitespaces and replaces them with a special char “▁” (U+2581)	  | 	 Input:	 `"Hello there"` 		 Ouput:	 `"Hello", "▁there"`  |
+| 	 CharDelimiterSplit	  | 	 Splits on a given character	  | 	 Example with	 `x` 	 :	 	 Input:	 `"Helloxthere"` 		 Ouput:	 `"Hello", "there"`  |
+| 	 Digits	  | 	 Splits the numbers from any other characters.	  | 	 Input:	 `"Hello123there"` 		 Output:	 `"Hello", "123", "there"`  |
+| 	 Split	  | 	 Versatile pre-tokenizer that splits on provided pattern and according to provided behavior. The pattern can be inverted if necessary.	 * pattern should be either a custom string or regexp.	* behavior should be one of:		+ removed		+ isolated		+ merged\_with\_previous		+ merged\_with\_next		+ contiguous	* invert should be a boolean flag.	 | 	 Example with pattern =	 	 , behavior =	 `"isolated"` 	 , invert =	 `False` 	 :	 	 Input:	 `"Hello, how are you?"` 		 Output:	 `"Hello,", " ", "how", " ", "are", " ", "you?"`  |
+| 	 Sequence	  | 	 Lets you compose multiple	 `PreTokenizer` 	 that will be run in the given order	  | `Sequence([Punctuation(), WhitespaceSplit()])`  |
 
 
 ## 楷模
@@ -282,38 +97,12 @@ NFC 和 NFKC）、小写等……的特殊性
 它们是 Tokenizer 的唯一必需组件。
 
 
-|
- 姓名
-  |
- 描述
-  |
+| 	 Name	  | 	 Description	  |
 | --- | --- |
-|
- 字级
-  |
- 这是“经典”标记化算法。它让您可以简单地将单词映射到 ID，无需任何花哨的操作。其优点是非常易于使用和理解，但它需要非常大的词汇量才能获得良好的覆盖范围。使用这个
- `模型`
- 需要使用一个
- `预分词器`
- 。该模型不会直接做出选择，它只是将输入标记映射到 ID。
-  |
-|
- BPE
-  |
- 最流行的子词标记化算法之一。字节对编码的工作原理是从字符开始，同时将最常见的字符合并在一起，从而创建新的标记。然后，它迭代地从语料库中看到的最常见的对构建新的标记。 BPE 能够通过使用多个子词标记来构建它从未见过的单词，因此需要较小的词汇表，并且出现“unk”（未知）标记的可能性较小。
-  |
-|
- 词片
-  |
- 这是一种与 BPE 非常相似的子词标记化算法，主要由 Google 在 BERT 等模型中使用。它使用贪婪算法，首先尝试构建长单词，当词汇表中不存在整个单词时，将其拆分为多个标记。这与 BPE 不同，BPE 从字符开始，构建尽可能大的代币。它使用了著名的
- `##`
- 前缀来识别属于单词一部分的标记（即不是单词的开头）。
-  |
-|
- 一元语法
-  |
- Unigram 也是一种子词标记化算法，其工作原理是尝试识别最佳的子词标记集，以最大化给定句子的概率。这与 BPE 的不同之处在于，BPE 不是基于一组顺序应用的规则来确定的。相反，Unigram 将能够计算多种标记化方式，同时选择最可能的一种。
-  |
+| 	 WordLevel	  | 	 This is the “classic” tokenization algorithm. It let’s you simply map words to IDs without anything fancy. This has the advantage of being really simple to use and understand, but it requires extremely large vocabularies for a good coverage. Using this	 `Model` 	 requires the use of a	 `PreTokenizer` 	. No choice will be made by this model directly, it simply maps input tokens to IDs.	  |
+| 	 BPE	  | 	 One of the most popular subword tokenization algorithm. The Byte-Pair-Encoding works by starting with characters, while merging those that are the most frequently seen together, thus creating new tokens. It then works iteratively to build new tokens out of the most frequent pairs it sees in a corpus. BPE is able to build words it has never seen by using multiple subword tokens, and thus requires smaller vocabularies, with less chances of having “unk” (unknown) tokens.	  |
+| 	 WordPiece	  | 	 This is a subword tokenization algorithm quite similar to BPE, used mainly by Google in models like BERT. It uses a greedy algorithm, that tries to build long words first, splitting in multiple tokens when entire words don’t exist in the vocabulary. This is different from BPE that starts from characters, building bigger tokens as possible. It uses the famous	 `##` 	 prefix to identify tokens that are part of a word (ie not starting a word).	  |
+| 	 Unigram	  | 	 Unigram is also a subword tokenization algorithm, and works by trying to identify the best set of subword tokens to maximize the probability for a given sentence. This is different from BPE in the way that this is not deterministic based on a set of rules applied sequentially. Instead Unigram will be able to compute multiple ways of tokenizing, while choosing the most probable one.	  |
 
 
 ## 后处理器
@@ -328,29 +117,9 @@ NFC 和 NFKC）、小写等……的特殊性
 只是。
 
 
-|
- 姓名
-  |
- 描述
-  |
- 例子
-  |
+| 	 Name	  | 	 Description	  | 	 Example	  |
 | --- | --- | --- |
-|
- 模板处理
-  |
- 让您轻松模板化后处理、添加特殊标记并指定
- `类型 ID`
- 对于每个序列/特殊标记。该模板被赋予两个表示单个序列和一对序列的字符串，以及一组要使用的特殊标记。
-  |
- 例如，当使用这些值指定模板时：
- * 单身的：
- `“[CLS] $A [九月]”`
-* 一对：
- `“[CLS] $A [九月] $B [九月]”`
-* 特殊代币：
-+ `“[CLS]”`
-+ `“[九月]”`
+| 	 TemplateProcessing	  | 	 Let’s you easily template the post processing, adding special tokens, and specifying the	 `type_id` 	 for each sequence/special token. The template is given two strings representing the single sequence and the pair of sequences, as well as a set of special tokens to use.	  | 	 Example, when specifying a template with these values:	 * single:	 `"[CLS] $A [SEP]"`	* pair:	 `"[CLS] $A [SEP] $B [SEP]"`	* special tokens:		+ `"[CLS]"`		+ `"[SEP]"`
 
 
  输入：
@@ -373,31 +142,11 @@ NFC 和 NFKC）、小写等……的特殊性
 例如，需要恢复的特殊字符或标识符。
 
 
-|
- 姓名
-  |
- 描述
-  |
+| 	 Name	  | 	 Description	  |
 | --- | --- |
-|
- 字节级
-  |
- 恢复 ByteLevel PreTokenizer。这个 PreTokenizer 在字节级别进行编码，使用一组可见的 Unicode 字符来表示每个字节，因此我们需要一个解码器来恢复此过程并再次获得可读的内容。
-  |
-|
- 元空间
-  |
- 恢复元空间预标记器。这个 PreTokenizer 使用特殊的标识符
- ``
- 识别空格，因此该解码器有助于解码这些空格。
-  |
-|
- 词片
-  |
- 恢复 WordPiece 模型。该模型使用特殊标识符
- `##`
- 对于连续的子词，因此这个解码器有助于解码这些子词。
-  |
+| 	 ByteLevel	  | 	 Reverts the ByteLevel PreTokenizer. This PreTokenizer encodes at the byte-level, using a set of visible Unicode characters to represent each byte, so we need a Decoder to revert this process and get something readable again.	  |
+| 	 Metaspace	  | 	 Reverts the Metaspace PreTokenizer. This PreTokenizer uses a special identifer	 `▁` 	 to identify whitespaces, and so this Decoder helps with decoding these.	  |
+| 	 WordPiece	  | 	 Reverts the WordPiece Model. This model uses a special identifier	 `##` 	 for continuing subwords, and so this Decoder helps with decoding these.	  |
 
 
 
