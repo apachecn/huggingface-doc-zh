@@ -212,11 +212,30 @@ print(output.ids)
 ```
 
 
+🤗 Tokenizers 库的一个重要功能是它附带
+完全对齐跟踪，这意味着您始终可以获得您的部分
+对应于给定标记的原始句子。这些存储在
+这
+ `偏移量`
+ 我们的属性
+ `编码`
+ 目的。例如，让我们
+假设我们想要找到导致该事件的原因
+ `“[UNK]”`
+ 出现的令牌，这是
+列表中索引 9 处的 token，我们只需询问该处的偏移量即可
+指数：
+
+
 
 ```
 print(output.offsets[9])
 # (26, 27)
 ```
+
+
+这些是与原始表情符号相对应的索引
+句子：
 
 
 
@@ -231,11 +250,41 @@ sentence[26:27]
 ### 
 
 
+ 后期处理
+
+
+我们可能希望我们的标记生成器自动添加特殊标记，例如
+ `“[CLS]”`
+ 或者
+ `“[九月]”`
+ 。为此，我们使用后处理器。
+ `模板处理`
+ 是最
+常用的，你只需要指定一个模板来处理
+单句和句子对，以及特殊标记
+以及他们的身份证。
+
+
+当我们构建标记器时，我们设置
+ `“[CLS]”`
+ 和
+ `“[九月]”`
+ 在位置 1
+以及我们的特殊令牌列表中的 2 个，因此这应该是它们的 ID。到
+仔细检查，我们可以使用
+ `Tokenizer.token_to_id`
+ 方法：
+
+
 
 ```
 tokenizer.token_to_id("[SEP]")
 # 2
 ```
+
+
+以下是我们如何设置后处理来为我们提供传统的
+BERT 输入：
 
 
 
@@ -250,5 +299,217 @@ tokenizer.post_processor = TemplateProcessing(
     ],
 )
 ```
+
+
+让我们更详细地查看这段代码。首先我们指定
+单个句子的模板：那些应该具有以下形式
+ `“[CLS] $A [九月]”`
+ 在哪里
+ `$A`
+ 代表我们的句子。
+
+
+然后，我们指定句子对的模板，它应该具有
+形式
+ `“[CLS] $A [九月] $B [九月]”`
+ 在哪里
+ `$A`
+ 代表第一句话和
+ `$B`
+ 第二个。这
+ `:1`
+ 在模板中添加代表
+ `类型 ID`
+ 我们想要输入的每个部分：它是默认的
+一切都为 0（这就是为什么我们没有
+ `$A:0`
+ ），这里我们将其设置为 1
+第二句和最后一句的标记
+ `“[九月]”`
+ 令牌。
+
+
+最后，我们在我们的代码中指定我们使用的特殊令牌及其 ID
+分词器的词汇表。
+
+
+为了检查它是否正常工作，让我们尝试对其进行编码
+句子如前：
+
+
+
+```
+output = tokenizer.encode("Hello, y'all! How are you 😁 ?")
+print(output.tokens)
+# ["[CLS]", "Hello", ",", "y", "'", "all", "!", "How", "are", "you", "[UNK]", "?", "[SEP]"]
+```
+
+
+要检查一对句子的结果，我们只需传递两个
+句子
+ `Tokenizer.encode`
+ :
+
+
+
+```
+output = tokenizer.encode("Hello, y'all!", "How are you 😁 ?")
+print(output.tokens)
+# ["[CLS]", "Hello", ",", "y", "'", "all", "!", "[SEP]", "How", "are", "you", "[UNK]", "?", "[SEP]"]
+```
+
+
+然后，您可以检查归因于每个令牌的类型 ID 是否正确
+
+
+
+```
+print(output.type_ids)
+# [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+```
+
+
+如果你保存你的分词器
+ `Tokenizer.save`
+ ，后处理器将被一起保存。
+
+
+### 
+
+
+ 批量编码多个句子
+
+
+要获得 🤗 Tokenizers 库的全速，最好
+使用以下命令批量处理您的文本
+ `Tokenizer.encode_batch`
+ 方法：
+
+
+
+```
+output = tokenizer.encode_batch(["Hello, y'all!", "How are you 😁 ?"])
+```
+
+
+然后输出是一个列表
+ `编码`
+ 像我们之前看到的那些物体。您可以一起处理尽可能多的
+只要你能记住，就可以随心所欲地编写文本。
+
+
+要处理一批句子对，请将两个列表传递给
+ `Tokenizer.encode_batch`
+ 方法：将
+句子列表 A 和句子列表 B：
+
+
+
+```
+output = tokenizer.encode_batch(
+    [["Hello, y'all!", "How are you 😁 ?"], ["Hello to you too!", "I'm fine, thank you!"]]
+)
+```
+
+
+当编码多个句子时，可以自动填充输出
+使用当前最长的句子
+ `Tokenizer.enable_padding`
+ ，与
+ `pad_token`
+ 及其 ID（我们可以
+仔细检查填充令牌的 id
+ `Tokenizer.token_to_id`
+ 像以前一样）：
+
+
+
+```
+tokenizer.enable_padding(pad_id=3, pad_token="[PAD]")
+```
+
+
+我们可以设置
+ `方向`
+ 填充物的
+（默认为右侧）或给定
+ `长度`
+ 如果我们想将每个样本填充到该特定数字（此处
+我们将其保留为未设置以填充到最长文本的大小）。
+
+
+
+```
+output = tokenizer.encode_batch(["Hello, y'all!", "How are you 😁 ?"])
+print(output[1].tokens)
+# ["[CLS]", "How", "are", "you", "[UNK]", "?", "[SEP]", "[PAD]"]
+```
+
+
+在这种情况下，
+ ‘注意面具’
+ 由产生的
+分词器考虑填充：
+
+
+
+```
+print(output[1].attention_mask)
+# [1, 1, 1, 1, 1, 1, 1, 0]
+```
+
+
+## 预训练
+
+
+
+### 
+
+
+ 使用预训练的分词器
+
+
+您可以从 Hugging Face Hub 加载任何标记器，只要
+ `tokenizer.json`
+ 文件在存储库中可用。
+
+
+
+```
+from tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+```
+
+
+### 
+
+
+ 从遗留词汇文件导入预训练的分词器
+
+
+您也可以直接导入预训练的分词器，只要您
+有它的词汇文件。例如，以下是如何导入
+经典的预训练 BERT 分词器：
+
+
+
+```
+from tokenizers import BertWordPieceTokenizer
+
+tokenizer = BertWordPieceTokenizer("bert-base-uncased-vocab.txt", lowercase=True)
+```
+
+
+只要您下载了文件
+ `bert-base-uncased-vocab.txt`
+ 和
+
+
+
+```
+wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt
+```
+
 
 
