@@ -417,3 +417,392 @@ dataset[idx]["image"]
 
 
 我们将首先使用编辑指令编辑数据集的图像并计算方向相似度。
+
+
+我们首先加载
+ [StableDiffusionInstructPix2PixPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/pix2pix#diffusers.StableDiffusionInstructPix2PixPipeline)
+ ：
+
+
+
+```
+from diffusers import StableDiffusionInstructPix2PixPipeline
+
+instruct_pix2pix_pipeline = StableDiffusionInstructPix2PixPipeline.from_pretrained(
+    "timbrooks/instruct-pix2pix", torch_dtype=torch.float16
+).to(device)
+```
+
+
+现在，我们执行编辑：
+
+
+
+```
+import numpy as np
+
+
+def edit\_image(input\_image, instruction):
+    image = instruct_pix2pix_pipeline(
+        instruction,
+        image=input_image,
+        output_type="np",
+        generator=generator,
+    ).images[0]
+    return image
+
+input_images = []
+original_captions = []
+modified_captions = []
+edited_images = []
+
+for idx in range(len(dataset)):
+    input_image = dataset[idx]["image"]
+    edit_instruction = dataset[idx]["edit"]
+    edited_image = edit_image(input_image, edit_instruction)
+
+    input_images.append(np.array(input_image))
+    original_captions.append(dataset[idx]["input"])
+    modified_captions.append(dataset[idx]["output"])
+    edited_images.append(edited_image)
+```
+
+
+为了测量方向相似性，我们首先加载 CLIP 的图像和文本编码器：
+
+
+
+```
+from transformers import (
+    CLIPTokenizer,
+    CLIPTextModelWithProjection,
+    CLIPVisionModelWithProjection,
+    CLIPImageProcessor,
+)
+
+clip_id = "openai/clip-vit-large-patch14"
+tokenizer = CLIPTokenizer.from_pretrained(clip_id)
+text_encoder = CLIPTextModelWithProjection.from_pretrained(clip_id).to(device)
+image_processor = CLIPImageProcessor.from_pretrained(clip_id)
+image_encoder = CLIPVisionModelWithProjection.from_pretrained(clip_id).to(device)
+```
+
+
+请注意，我们正在使用特定的 CLIP 检查点，即
+ `openai/clip-vit-large-patch14`
+ 。这是因为稳定扩散预训练是使用此 CLIP 变体进行的。有关更多详细信息，请参阅
+ [文档](https://huggingface.co/docs/transformers/model_doc/clip)
+ 。
+
+
+接下来，我们准备一个PyTorch
+ `nn.模块`
+ 计算方向相似度：
+
+
+
+```
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+class DirectionalSimilarity(nn.Module):
+    def \_\_init\_\_(self, tokenizer, text\_encoder, image\_processor, image\_encoder):
+        super().__init__()
+        self.tokenizer = tokenizer
+        self.text_encoder = text_encoder
+        self.image_processor = image_processor
+        self.image_encoder = image_encoder
+
+    def preprocess\_image(self, image):
+        image = self.image_processor(image, return_tensors="pt")["pixel\_values"]
+        return {"pixel\_values": image.to(device)}
+
+    def tokenize\_text(self, text):
+        inputs = self.tokenizer(
+            text,
+            max_length=self.tokenizer.model_max_length,
+            padding="max\_length",
+            truncation=True,
+            return_tensors="pt",
+        )
+        return {"input\_ids": inputs.input_ids.to(device)}
+
+    def encode\_image(self, image):
+        preprocessed_image = self.preprocess_image(image)
+        image_features = self.image_encoder(**preprocessed_image).image_embeds
+        image_features = image_features / image_features.norm(dim=1, keepdim=True)
+        return image_features
+
+    def encode\_text(self, text):
+        tokenized_text = self.tokenize_text(text)
+        text_features = self.text_encoder(**tokenized_text).text_embeds
+        text_features = text_features / text_features.norm(dim=1, keepdim=True)
+        return text_features
+
+    def compute\_directional\_similarity(self, img\_feat\_one, img\_feat\_two, text\_feat\_one, text\_feat\_two):
+        sim_direction = F.cosine_similarity(img_feat_two - img_feat_one, text_feat_two - text_feat_one)
+        return sim_direction
+
+    def forward(self, image\_one, image\_two, caption\_one, caption\_two):
+        img_feat_one = self.encode_image(image_one)
+        img_feat_two = self.encode_image(image_two)
+        text_feat_one = self.encode_text(caption_one)
+        text_feat_two = self.encode_text(caption_two)
+        directional_similarity = self.compute_directional_similarity(
+            img_feat_one, img_feat_two, text_feat_one, text_feat_two
+        )
+        return directional_similarity
+```
+
+
+让我们把
+ `方向相似性`
+ 现在使用。
+
+
+
+```
+dir_similarity = DirectionalSimilarity(tokenizer, text_encoder, image_processor, image_encoder)
+scores = []
+
+for i in range(len(input_images)):
+    original_image = input_images[i]
+    original_caption = original_captions[i]
+    edited_image = edited_images[i]
+    modified_caption = modified_captions[i]
+
+    similarity_score = dir_similarity(original_image, edited_image, original_caption, modified_caption)
+    scores.append(float(similarity_score.detach().cpu()))
+
+print(f"CLIP directional similarity: {np.mean(scores)}")
+# CLIP directional similarity: 0.0797976553440094
+```
+
+
+与 CLIP Score 一样，CLIP 方向相似度越高越好。
+
+
+应该指出的是，
+ `StableDiffusionInstructPix2PixPipeline`
+ 暴露了两个论点，即
+ `image_guidance_scale`
+ 和
+ `指导规模`
+ 让您可以控制最终编辑图像的质量。我们鼓励您尝试这两个参数，看看它们对方向相似性的影响。
+
+
+我们可以扩展这个指标的想法来衡量原始图像和编辑后的版本的相似程度。为此，我们可以这样做
+ `F.cosine_similarity(img_feat_two, img_feat_one)`
+ 。对于此类编辑，我们仍然希望尽可能保留图像的主要语义，即高相似度得分。
+
+
+我们可以将这些指标用于类似的管道，例如
+ [`StableDiffusionPix2PixZeroPipeline`](https://huggingface.co/docs/diffusers/main/en/api/pipelines/pix2pix_zero#diffusers.StableDiffusionPix2PixZeroPipeline)
+ 。
+
+
+CLIP得分和CLIP方向相似度都依赖于CLIP模型，这可能会使评估产生偏差。
+
+
+***扩展 IS、FID（稍后讨论）或 KID 等指标可能很困难***
+ 当评估的模型在大型图像字幕数据集（例如
+ [LAION-5B数据集](https://laion.ai/blog/laion-5b/)
+ ）。这是因为这些指标的底层是用于提取中间图像特征的 InceptionNet（在 ImageNet-1k 数据集上预先训练）。 Stable Diffusion 的预训练数据集可能与 InceptionNet 的预训练数据集有有限的重叠，因此它不是特征提取的良好候选者。
+
+
+***使用上述指标有助于评估类条件模型。例如，
+ [DiT](https://huggingface.co/docs/diffusers/main/en/api/pipelines/dit)
+ 。它是在 ImageNet-1k 类上进行预训练的。***
+
+
+
+### 
+
+
+ 类条件图像生成
+
+
+类条件生成模型通常在类标记数据集上进行预训练，例如
+ [ImageNet-1k](https://huggingface.co/datasets/imagenet-1k)
+ 。评估这些模型的流行指标包括 Fréchet 起始距离 (FID)、内核起始距离 (KID) 和起始分数 (IS)。在本文档中，我们重点关注 FID（
+ [Heusel 等人](https://arxiv.org/abs/1706.08500)
+ ）。我们展示了如何计算它
+ [`DiTPipeline`](https://huggingface.co/docs/diffusers/api/pipelines/dit)
+ ，它使用
+ [DiT模型](https://arxiv.org/abs/2212.09748)
+ 在引擎盖下。
+
+
+FID 旨在衡量两个图像数据集的相似程度。按照
+ [此资源](https://mm Generation.readthedocs.io/en/latest/quick_run.html#fid)
+ ：
+
+
+>
+>
+> Fréchet 起始距离是两个图像数据集之间相似性的度量。它被证明与人类对视觉质量的判断有很好的相关性，并且最常用于评估生成对抗网络样本的质量。 FID 是通过计算适合 Inception 网络特征表示的两个高斯之间的 Fréchet 距离来计算的。
+>
+>
+>
+>
+
+
+这两个数据集本质上是真实图像的数据集和假图像的数据集（在我们的例子中是生成的图像）​​。 FID 通常使用两个大型数据集来计算。但是，对于本文档，我们将使用两个小型数据集。
+
+
+我们首先从 ImageNet-1k 训练集中下载一些图像：
+
+
+
+```
+from zipfile import ZipFile
+import requests
+
+
+def download(url, local\_filepath):
+    r = requests.get(url)
+    with open(local_filepath, "wb") as f:
+        f.write(r.content)
+    return local_filepath
+
+dummy_dataset_url = "https://hf.co/datasets/sayakpaul/sample-datasets/resolve/main/sample-imagenet-images.zip"
+local_filepath = download(dummy_dataset_url, dummy_dataset_url.split("/")[-1])
+
+with ZipFile(local_filepath, "r") as zipper:
+    zipper.extractall(".")
+```
+
+
+
+```
+from PIL import Image
+import os
+
+dataset_path = "sample-imagenet-images"
+image_paths = sorted([os.path.join(dataset_path, x) for x in os.listdir(dataset_path)])
+
+real_images = [np.array(Image.open(path).convert("RGB")) for path in image_paths]
+```
+
+
+这些是来自以下 ImageNet-1k 类别的 10 张图像：“cassette\_player”、“chain\_saw”(x2)、“church”、“gas\_pump”(x3)、“parachute”(x2) 和“tench” ”。
+
+
+![真实图像](https://huggingface.co/datasets/diffusers/docs-images/resolve/main/evaluation_diffusion_models/real-images.png)
+  
+
+*真实图像。*
+
+
+现在图像已加载，让我们对它们应用一些轻量级预处理，以将它们用于 FID 计算。
+
+
+
+```
+from torchvision.transforms import functional as F
+
+
+def preprocess\_image(image):
+    image = torch.tensor(image).unsqueeze(0)
+    image = image.permute(0, 3, 1, 2) / 255.0
+    return F.center_crop(image, (256, 256))
+
+real_images = torch.cat([preprocess_image(image) for image in real_images])
+print(real_images.shape)
+# torch.Size([10, 3, 256, 256])
+```
+
+
+我们现在加载
+ [`DiTPipeline`](https://huggingface.co/docs/diffusers/api/pipelines/dit)
+ 生成以上述类别为条件的图像。
+
+
+
+```
+from diffusers import DiTPipeline, DPMSolverMultistepScheduler
+
+dit_pipeline = DiTPipeline.from_pretrained("facebook/DiT-XL-2-256", torch_dtype=torch.float16)
+dit_pipeline.scheduler = DPMSolverMultistepScheduler.from_config(dit_pipeline.scheduler.config)
+dit_pipeline = dit_pipeline.to("cuda")
+
+words = [
+    "cassette player",
+    "chainsaw",
+    "chainsaw",
+    "church",
+    "gas pump",
+    "gas pump",
+    "gas pump",
+    "parachute",
+    "parachute",
+    "tench",
+]
+
+class_ids = dit_pipeline.get_label_ids(words)
+output = dit_pipeline(class_labels=class_ids, generator=generator, output_type="np")
+
+fake_images = output.images
+fake_images = torch.tensor(fake_images)
+fake_images = fake_images.permute(0, 3, 1, 2)
+print(fake_images.shape)
+# torch.Size([10, 3, 256, 256])
+```
+
+
+现在，我们可以使用以下方法计算 FID
+ [`torchmetrics`](https://torchmetrics.readthedocs.io/)
+ 。
+
+
+
+```
+from torchmetrics.image.fid import FrechetInceptionDistance
+
+fid = FrechetInceptionDistance(normalize=True)
+fid.update(real_images, real=True)
+fid.update(fake_images, real=False)
+
+print(f"FID: {float(fid.compute())}")
+# FID: 177.7147216796875
+```
+
+
+FID 越低越好。有几个因素会影响 FID：
+
+
+* 图片数量（真实和虚假）
+* 扩散过程中引入的随机性
+* 扩散过程中的推理步骤数
+* 扩散过程中使用的调度器
+
+
+因此，对于最后两点，最好在不同的种子和推理步骤上运行评估，然后报告平均结果。
+
+
+FID 结果往往很脆弱，因为它们取决于很多因素：
+
+
+* 计算时使用的具体Inception模型。
+* 计算的实现精度。
+* 图像格式（如果我们从 PNG 开始，与从 JPG 开始就不一样）。
+
+
+请记住，FID 在比较相似的运行时通常最有用，但它
+除非作者仔细披露 FID，否则很难重现论文结果
+测量代码。
+
+
+这些要点也适用于其他相关指标，例如 KID 和 IS。
+
+
+作为最后一步，让我们目视检查
+ `假图像`
+ 。
+
+
+![假图像](https://huggingface.co/datasets/diffusers/docs-images/resolve/main/evaluation_diffusion_models/fake-images.png)
+  
+
+*假图像。*

@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# xFormers
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,39 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/optimization/xformers>
 
-开始写原始页面的翻译内容
+
+我们推荐
+ [xFormers](https://github.com/facebookresearch/xformers)
+ 用于推理和训练。在我们的测试中，在注意力块中执行的优化可以提高速度并减少内存消耗。
+
+
+从以下位置安装 xFormers
+ `点`
+ ：
 
 
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+pip install xformers
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+xFormers
+ `点`
+ 软件包需要最新版本的 PyTorch。如果您需要使用以前版本的 PyTorch，那么我们建议
+ [从源安装 xFormers](https://github.com/facebookresearch/xformers#installing-xformers)
+ 。
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+xFormers安装后，您可以使用
+ `enable_xformers_memory_efficient_attention()`
+ 为了更快的推理和减少内存消耗，如下所示
+ [部分](内存#内存效率-注意力)
+ 。
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+根据这个
+ [问题](https://github.com/huggingface/diffusers/issues/2234#issuecomment-1416931212)
+ , xFormers
+ `v0.0.16`
+ 无法用于某些 GPU 中的训练（fine-tune 或 DreamBooth）。如果您发现此问题，请安装问题评论中所示的开发版本。

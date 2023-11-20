@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# ONNX 运行时
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,112 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/optimization/onnx>
 
-开始写原始页面的翻译内容
+
+🤗
+ [最佳](https://github.com/huggingface/optimum)
+ 提供与 ONNX 运行时兼容的稳定扩散管道。您需要使用以下命令安装 🤗 Optimum 以获得 ONNX 运行时支持：
 
 
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+pip install optimum["onnxruntime"]
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+本指南将向您展示如何将 Stable Diffusion 和 Stable Diffusion XL (SDXL) 管道与 ONNX Runtime 结合使用。
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+## 稳定扩散
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+要加载并运行推理，请使用
+ [ORTStableDiffusionPipeline](https://huggingface.co/docs/optimum/v1.14.0/en/onnxruntime/package_reference/modeling_ort#optimum.onnxruntime.ORTStableDiffusionPipeline)
+ 。如果您想加载 PyTorch 模型并将其即时转换为 ONNX 格式，请设置
+ `导出=真`
+ :
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+
+```
+from optimum.onnxruntime import ORTStableDiffusionPipeline
+
+model_id = "runwayml/stable-diffusion-v1-5"
+pipeline = ORTStableDiffusionPipeline.from_pretrained(model_id, export=True)
+prompt = "sailing ship in storm by Leonardo da Vinci"
+image = pipeline(prompt).images[0]
+pipeline.save_pretrained("./onnx-stable-diffusion-v1-5")
+```
+
+
+批量生成多个提示似乎占用太多内存。当我们研究它时，您可能需要迭代而不是批处理。
+
+
+要离线导出 ONNX 格式的管道并在以后用于推理，
+使用
+ [`optimum-cli 导出`](https://huggingface.co/docs/optimum/main/en/exporters/onnx/usage_guides/export_a_model#exporting-a-model-to-onnx-using-the-cli)
+ 命令：
+
+
+
+```
+optimum-cli export onnx --model runwayml/stable-diffusion-v1-5 sd_v15_onnx/
+```
+
+
+然后执行推理（您不必指定
+ `导出=真`
+ 再次）：
+
+
+
+```
+from optimum.onnxruntime import ORTStableDiffusionPipeline
+
+model_id = "sd\_v15\_onnx"
+pipeline = ORTStableDiffusionPipeline.from_pretrained(model_id)
+prompt = "sailing ship in storm by Leonardo da Vinci"
+image = pipeline(prompt).images[0]
+```
+
+
+![](https://huggingface.co/datasets/optimum/documentation-images/resolve/main/onnxruntime/stable_diffusion_v1_5_ort_sail_boat.png)
+
+
+ 您可以在 🤗 Optimum 中找到更多示例
+ [文档](https://huggingface.co/docs/optimum/)
+ ，并且稳定扩散支持文本到图像、图像到图像和修复。
+
+
+## 稳定扩散XL
+
+
+
+要使用 SDXL 加载并运行推理，请使用
+ [ORTStableDiffusionXLPipeline](https://huggingface.co/docs/optimum/v1.14.0/en/onnxruntime/package_reference/modeling_ort#optimum.onnxruntime.ORTStableDiffusionXLPipeline)
+ ：
+
+
+
+```
+from optimum.onnxruntime import ORTStableDiffusionXLPipeline
+
+model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+pipeline = ORTStableDiffusionXLPipeline.from_pretrained(model_id)
+prompt = "sailing ship in storm by Leonardo da Vinci"
+image = pipeline(prompt).images[0]
+```
+
+
+要以 ONNX 格式导出管道并稍后将其用于推理，请使用
+ [`optimum-cli 导出`](https://huggingface.co/docs/optimum/main/en/exporters/onnx/usage_guides/export_a_model#exporting-a-model-to-onnx-using-the-cli)
+ 命令：
+
+
+
+```
+optimum-cli export onnx --model stabilityai/stable-diffusion-xl-base-1.0 --task stable-diffusion-xl sd_xl_onnx/
+```
+
+
+ONNX 格式的 SDXL 支持文本到图像和图像到图像。

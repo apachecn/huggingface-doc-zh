@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 开放VINO
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,110 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/optimization/open_vino>
 
-开始写原始页面的翻译内容
+
+🤗
+ [最佳](https://github.com/huggingface/optimum-intel)
+ 提供与 OpenVINO 兼容的稳定扩散管道，以在各种 Intel 处理器上执行推理（请参阅
+ [完整列表]((https://docs.openvino.ai/latest/openvino_docs_OV_UG_supported_plugins_Supported_Devices.html))
+ 支持的设备数）。
+
+
+您需要安装 🤗 Optimum Intel 以及
+ `--升级策略渴望`
+ 选项以确保
+ [`optimum-intel`](https://github.com/huggingface/optimum-intel)
+ 正在使用最新版本：
 
 
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+pip install --upgrade-strategy eager optimum["openvino"]
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+本指南将向您展示如何将 Stable Diffusion 和 Stable Diffusion XL (SDXL) 管道与 OpenVINO 结合使用。
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+## 稳定扩散
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+要加载并运行推理，请使用
+ `OV稳定扩散管道`
+ 。如果您想加载 PyTorch 模型并将其即时转换为 OpenVINO 格式，请设置
+ `导出=真`
+ ：
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+
+```
+from optimum.intel import OVStableDiffusionPipeline
+
+model_id = "runwayml/stable-diffusion-v1-5"
+pipeline = OVStableDiffusionPipeline.from_pretrained(model_id, export=True)
+prompt = "sailing ship in storm by Rembrandt"
+image = pipeline(prompt).images[0]
+
+# Don't forget to save the exported model
+pipeline.save_pretrained("openvino-sd-v1-5")
+```
+
+
+为了进一步加速推理，静态地重塑模型。如果更改任何参数（例如输出高度或宽度），则需要再次静态地重塑模型。
+
+
+
+```
+# Define the shapes related to the inputs and desired outputs
+batch_size, num_images, height, width = 1, 1, 512, 512
+
+# Statically reshape the model
+pipeline.reshape(batch_size, height, width, num_images)
+# Compile the model before inference
+pipeline.compile()
+
+image = pipeline(
+    prompt,
+    height=height,
+    width=width,
+    num_images_per_prompt=num_images,
+).images[0]
+```
+
+
+![](https://huggingface.co/datasets/optimum/documentation-images/resolve/main/intel/openvino/stable_diffusion_v1_5_sail_boat_rembrandt.png)
+
+
+ 您可以在 🤗 最优中找到更多示例
+ [文档](https://huggingface.co/docs/optimum/intel/inference#stable-diffusion)
+ ，并且稳定扩散支持文本到图像、图像到图像和修复。
+
+
+## 稳定扩散XL
+
+
+
+要使用 SDXL 加载并运行推理，请使用
+ `OVStableDiffusionXLPipeline`
+ ：
+
+
+
+```
+from optimum.intel import OVStableDiffusionXLPipeline
+
+model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+pipeline = OVStableDiffusionXLPipeline.from_pretrained(model_id)
+prompt = "sailing ship in storm by Rembrandt"
+image = pipeline(prompt).images[0]
+```
+
+
+为了进一步加快推理速度，
+ [静态重塑](#stable-diffusion)
+ 模型如稳定扩散部分所示。
+
+
+您可以在 🤗 最优中找到更多示例
+ [文档](https://huggingface.co/docs/optimum/intel/inference#stable-diffusion-xl)
+ ，并且支持在 OpenVINO 中运行 SDXL 以进行文本到图像和图像到图像。

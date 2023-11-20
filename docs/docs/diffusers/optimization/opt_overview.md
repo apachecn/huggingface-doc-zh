@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 概述
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,14 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/optimization/opt_overview>
 
-开始写原始页面的翻译内容
+
+生成高质量输出需要大量计算，尤其是在从噪声输出到噪声较小输出的每个迭代步骤中。 🤗 Diffuser 的目标之一是让每个人都能广泛使用这项技术，其中包括实现对消费者和专用硬件的快速推理。
 
 
-
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
-
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+本节将介绍用于优化推理速度和减少内存消耗的提示和技巧，例如半精度权重和切片注意力。您还将学习如何使用以下命令加速 PyTorch 代码
+ [`torch.compile`](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html)
+ 或者
+ [ONNX 运行时](https://onnxruntime.ai/docs/)
+ ，并通过以下方式实现记忆高效的注意力
+ [xFormers](https://facebookresearch.github.io/xformers/)
+ 。还有在 Apple Silicon、Intel 或 Habana 处理器等特定硬件上运行推理的指南。
