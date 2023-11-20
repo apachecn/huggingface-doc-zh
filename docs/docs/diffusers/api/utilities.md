@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Utilities
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,360 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/api/utilities>
 
-开始写原始页面的翻译内容
+
+
+ Utility and helper functions for working with 🤗 Diffusers.
+ 
+
+
+## numpy\_to\_pil
 
 
 
-注意事项: 
 
-1. 代码参考:
+#### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+ diffusers.utils.numpy\_to\_pil
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
+[<
+ 
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+ source
+ 
 
-4. **翻译完后请删除上面所有模版内容就行**
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/pil_utils.py#L37)
+
+
+
+ (
+ 
+
+
+ images
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ Convert a numpy image or a batch of images to a PIL image.
+ 
+
+
+## pt\_to\_pil
+
+
+
+
+#### 
+
+
+
+
+ diffusers.utils.pt\_to\_pil
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/pil_utils.py#L27)
+
+
+
+ (
+ 
+
+
+ images
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ Convert a torch image to a PIL image.
+ 
+
+
+## load\_image
+
+
+
+
+#### 
+
+
+
+
+ diffusers.utils.load\_image
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/loading_utils.py#L9)
+
+
+
+ (
+ 
+
+
+ image
+ 
+ : typing.Union[str, PIL.Image.Image]
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`PIL.Image.Image` 
+
+
+ Parameters
+ 
+
+
+
+
+* **image** 
+ (
+ `str` 
+ or
+ `PIL.Image.Image` 
+ ) —
+The image to convert to the PIL Image format.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`PIL.Image.Image` 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+
+
+
+ A PIL Image.
+ 
+
+
+
+ Loads
+ `image` 
+ to a PIL Image.
+ 
+
+
+## export\_to\_gif
+
+
+
+
+#### 
+
+
+
+
+ diffusers.utils.export\_to\_gif
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/export_utils.py#L31)
+
+
+
+ (
+ 
+
+
+ image
+ 
+ : typing.List[PIL.Image.Image]
+ 
+
+
+
+
+ output\_gif\_path
+ 
+ : str = None
+ 
+
+
+
+ )
+ 
+
+
+## export\_to\_video
+
+
+
+
+#### 
+
+
+
+
+ diffusers.utils.export\_to\_video
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/export_utils.py#L118)
+
+
+
+ (
+ 
+
+
+ video\_frames
+ 
+ : typing.List[numpy.ndarray]
+ 
+
+
+
+
+ output\_video\_path
+ 
+ : str = None
+ 
+
+
+
+ )
+ 
+
+
+## make\_image\_grid
+
+
+
+
+#### 
+
+
+
+
+ diffusers.utils.make\_image\_grid
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/pil_utils.py#L53)
+
+
+
+ (
+ 
+
+
+ images
+ 
+ : typing.List[PIL.Image.Image]
+ 
+
+
+
+
+ rows
+ 
+ : int
+ 
+
+
+
+
+ cols
+ 
+ : int
+ 
+
+
+
+
+ resize
+ 
+ : int = None
+ 
+
+
+
+ )
+ 
+
+
+
+
+ Prepares a single grid of images. Useful for visualization purposes.
