@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Stable Diffusion 2
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,192 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/stable_diffusion_2>
 
-开始写原始页面的翻译内容
+
+
+ Stable Diffusion 2 is a text-to-image
+ *latent diffusion* 
+ model built upon the work of the original
+ [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) 
+ , and it was led by Robin Rombach and Katherine Crowson from
+ [Stability AI](https://stability.ai/) 
+ and
+ [LAION](https://laion.ai/) 
+.
+ 
 
 
 
-注意事项: 
+*The Stable Diffusion 2.0 release includes robust text-to-image models trained using a brand new text encoder (OpenCLIP), developed by LAION with support from Stability AI, which greatly improves the quality of the generated images compared to earlier V1 releases. The text-to-image models in this release can generate images with default resolutions of both 512x512 pixels and 768x768 pixels.
+These models are trained on an aesthetic subset of the
+ [LAION-5B dataset](https://laion.ai/blog/laion-5b/) 
+ created by the DeepFloyd team at Stability AI, which is then further filtered to remove adult content using
+ [LAION’s NSFW filter](https://openreview.net/forum?id=M3Y74vmsMcY) 
+.* 
 
-1. 代码参考:
 
-```py
+
+
+ For more details about how Stable Diffusion 2 works and how it differs from the original Stable Diffusion, please refer to the official
+ [announcement post](https://stability.ai/blog/stable-diffusion-v2-release) 
+.
+ 
+
+
+
+ The architecture of Stable Diffusion 2 is more or less identical to the original
+ [Stable Diffusion model](./text2img) 
+ so check out it’s API documentation for how to use Stable Diffusion 2. We recommend using the
+ [DPMSolverMultistepScheduler](/docs/diffusers/v0.23.0/en/api/schedulers/multistep_dpm_solver#diffusers.DPMSolverMultistepScheduler) 
+ as it’s currently the fastest scheduler.
+ 
+
+
+
+ Stable Diffusion 2 is available for tasks like text-to-image, inpainting, super-resolution, and depth-to-image:
+ 
+
+
+| 	 Task	  | 	 Repository	  |
+| --- | --- |
+| 	 text-to-image (512x512)	  | [stabilityai/stable-diffusion-2-base](https://huggingface.co/stabilityai/stable-diffusion-2-base)  |
+| 	 text-to-image (768x768)	  | [stabilityai/stable-diffusion-2](https://huggingface.co/stabilityai/stable-diffusion-2)  |
+| 	 inpainting	  | [stabilityai/stable-diffusion-2-inpainting](https://huggingface.co/stabilityai/stable-diffusion-2-inpainting)  |
+| 	 super-resolution	  | [stable-diffusion-x4-upscaler](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)  |
+| 	 depth-to-image	  | [stabilityai/stable-diffusion-2-depth](https://huggingface.co/stabilityai/stable-diffusion-2-depth)  |
+
+
+
+ Here are some examples for how to use Stable Diffusion 2 for each task:
+ 
+
+
+
+
+ Make sure to check out the Stable Diffusion
+ [Tips](overview#tips) 
+ section to learn how to explore the tradeoff between scheduler speed and quality, and how to reuse pipeline components efficiently!
+ 
+
+
+
+ If you’re interested in using one of the official checkpoints for a task, explore the
+ [CompVis](https://huggingface.co/CompVis) 
+ ,
+ [Runway](https://huggingface.co/runwayml) 
+ , and
+ [Stability AI](https://huggingface.co/stabilityai) 
+ Hub organizations!
+ 
+
+
+## Text-to-image
+
+
+
+
+```
+from diffusers import DiffusionPipeline, DPMSolverMultistepScheduler
 import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+repo_id = "stabilityai/stable-diffusion-2-base"
+pipe = DiffusionPipeline.from_pretrained(repo_id, torch_dtype=torch.float16, revision="fp16")
+
+pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
+pipe = pipe.to("cuda")
+
+prompt = "High quality photo of an astronaut riding a horse in space"
+image = pipe(prompt, num_inference_steps=25).images[0]
+image.save("astronaut.png")
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+## Inpainting
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
+```
+import PIL
+import requests
+import torch
+from io import BytesIO
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+from diffusers import DiffusionPipeline, DPMSolverMultistepScheduler
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+def download\_image(url):
+    response = requests.get(url)
+    return PIL.Image.open(BytesIO(response.content)).convert("RGB")
+
+
+img_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting\_examples/overture-creations-5sI6fQgYIuo.png"
+mask_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting\_examples/overture-creations-5sI6fQgYIuo\_mask.png"
+
+init_image = download_image(img_url).resize((512, 512))
+mask_image = download_image(mask_url).resize((512, 512))
+
+repo_id = "stabilityai/stable-diffusion-2-inpainting"
+pipe = DiffusionPipeline.from_pretrained(repo_id, torch_dtype=torch.float16, revision="fp16")
+
+pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
+pipe = pipe.to("cuda")
+
+prompt = "Face of a yellow cat, high resolution, sitting on a park bench"
+image = pipe(prompt=prompt, image=init_image, mask_image=mask_image, num_inference_steps=25).images[0]
+
+image.save("yellow\_cat.png")
+```
+
+
+## Super-resolution
+
+
+
+
+```
+import requests
+from PIL import Image
+from io import BytesIO
+from diffusers import StableDiffusionUpscalePipeline
+import torch
+
+# load model and scheduler
+model_id = "stabilityai/stable-diffusion-x4-upscaler"
+pipeline = StableDiffusionUpscalePipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+pipeline = pipeline.to("cuda")
+
+# let's download an image
+url = "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main/sd2-upscale/low\_res\_cat.png"
+response = requests.get(url)
+low_res_img = Image.open(BytesIO(response.content)).convert("RGB")
+low_res_img = low_res_img.resize((128, 128))
+prompt = "a white cat"
+upscaled_image = pipeline(prompt=prompt, image=low_res_img).images[0]
+upscaled_image.save("upsampled\_cat.png")
+```
+
+
+## Depth-to-image
+
+
+
+
+```
+import torch
+import requests
+from PIL import Image
+
+from diffusers import StableDiffusionDepth2ImgPipeline
+
+pipe = StableDiffusionDepth2ImgPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-2-depth",
+    torch_dtype=torch.float16,
+).to("cuda")
+
+
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+init_image = Image.open(requests.get(url, stream=True).raw)
+prompt = "two tigers"
+n_propmt = "bad, deformed, ugly, bad anotomy"
+image = pipe(prompt=prompt, image=init_image, negative_prompt=n_propmt, strength=0.7).images[0]
+```
