@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 使模型适应新任务
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,91 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/training/adapt_a_model>
 
-开始写原始页面的翻译内容
+
+许多扩散系统共享相同的组件，允许您将一项任务的预训练模型调整为完全不同的任务。
+
+
+本指南将向您展示如何通过初始化和修改预训练的体系结构来调整预训练的文本到图像模型以进行修复
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel)
+ 。
+
+
+## 配置 UNet2DConditionModel 参数
 
 
 
-注意事项: 
+A
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel)
+ 默认情况下接受 4 个通道
+ [输入示例](https://huggingface.co/docs/diffusers/v0.16.0/en/api/models#diffusers.UNet2DConditionModel.in_channels)
+ 。例如，加载预训练的文本到图像模型，例如
+ [`runwayml/stable-diffusion-v1-5`](https://huggingface.co/runwayml/stable-diffusion-v1-5)
+ 看看有多少
+ `in_channels`
+ :
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+from diffusers import StableDiffusionPipeline
+
+pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", use_safetensors=True)
+pipeline.unet.config["in\_channels"]
+4
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+修复需要输入样本中有 9 个通道。您可以在预训练的修复模型中检查该值，例如
+ [`runwayml/stable-diffusion-inpainting`](https://huggingface.co/runwayml/stable-diffusion-inpainting)
+ :
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+```
+from diffusers import StableDiffusionPipeline
 
-3. 图片参考(用图片的实际地址就行):
+pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-inpainting", use_safetensors=True)
+pipeline.unet.config["in\_channels"]
+9
+```
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+要调整文本到图像模型以进行修复，您需要更改
+ `in_channels`
+ 从 4 到 9。
+
+
+初始化一个
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel)
+ 使用预训练的文本到图像模型权重，并更改
+ `in_channels`
+ 至 9. 更改数量
+ `in_channels`
+ 意味着你需要设置
+ `ignore_mismatched_sizes=True`
+ 和
+ `low_cpu_mem_usage=False`
+ 以避免尺寸不匹配错误，因为现在形状不同。
+
+
+
+```
+from diffusers import UNet2DConditionModel
+
+model_id = "runwayml/stable-diffusion-v1-5"
+unet = UNet2DConditionModel.from_pretrained(
+    model_id,
+    subfolder="unet",
+    in_channels=9,
+    low_cpu_mem_usage=False,
+    ignore_mismatched_sizes=True,
+    use_safetensors=True,
+)
+```
+
+
+文本到图像模型中其他组件的预训练权重是从其检查点初始化的，但输入通道权重 (
+ `conv_in.weight`
+ ） 的
+ `乌内特`
+ 是随机初始化的。微调模型以进行修复非常重要，否则模型会返回噪声。
