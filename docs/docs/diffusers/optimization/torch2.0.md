@@ -1,4 +1,4 @@
-# 火炬2.0
+# torch2.0
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -85,14 +85,14 @@ SDPA 的速度和内存效率应与
 ```
 
 
-## 火炬编译
+## torch编译
 
 
 
 这
- `火炬.编译`
+ `torch.编译`
  函数通常可以为您的 PyTorch 代码提供额外的加速。在 🤗 Diffusers 中，通常最好用以下方式包裹 UNet
- `火炬.编译`
+ `torch.编译`
  因为它完成了管道中的大部分繁重工作。
 
 
@@ -108,13 +108,13 @@ images = pipe(prompt, num_inference_steps=steps, num_images_per_prompt=batch_siz
 
 
 根据 GPU 类型，
- `火炬.编译`
+ `torch.编译`
  可以提供一个
  *额外加速*
  的
  **5-300x**
  在 SDPA 之上！如果您使用的是更新的 GPU 架构，例如 Ampere（A100、3090）、Ada（4090）和 Hopper（H100），
- `火炬.编译`
+ `torch.编译`
  能够从这些 GPU 中榨取更多性能。
 
 
@@ -122,7 +122,7 @@ images = pipe(prompt, num_inference_steps=steps, num_images_per_prompt=batch_siz
 
 
 有关更多信息和不同选项
- `火炬.编译`
+ `torch.编译`
  ，请参阅
  [`torch_compile`](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html)
  教程。
@@ -133,9 +133,9 @@ images = pipe(prompt, num_inference_steps=steps, num_images_per_prompt=batch_siz
 
 
 我们对 PyTorch 2.0 的高效注意力实现进行了全面的基准测试
- `火炬.编译`
+ `torch.编译`
  针对我们最常用的五个管道的不同 GPU 和批量大小。代码以🤗 Diffusers v0.17.0.dev0为基准进行优化
- `火炬.编译`
+ `torch.编译`
  用法（参见
  [此处](https://github.com/huggingface/diffusers/pull/3313)
  更多细节）。
@@ -349,7 +349,7 @@ for _ in range(3):
 下图突出显示了
  [StableDiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/stable_diffusion/text2img#diffusers.StableDiffusionPipeline)
  使用 PyTorch 2.0 跨五个 GPU 系列
- `火炬.编译`
+ `torch.编译`
  已启用。下图的基准是在
  *迭代次数/秒*
  。
@@ -360,7 +360,7 @@ for _ in range(3):
 
 为了让您更好地了解这种加速如何适用于其他管道，请考虑以下内容
 使用 PyTorch 2.0 的 A100 的图表和
- `火炬.编译`
+ `torch.编译`
  ：
 
 

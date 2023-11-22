@@ -804,7 +804,7 @@ make_image_grid([init_image, mask_image, image, image_elden_ring], rows=2, cols=
 要进一步加快推理代码的速度，请使用
  [`torch_compile`](../optimization/torch2.0#torchcompile)
  。你应该包裹
- `火炬.编译`
+ `torch.编译`
  围绕管道中最密集的组件（通常是 UNet）：
 
 
@@ -817,5 +817,5 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 了解更多信息
  [减少内存使用](../优化/内存)
  和
- [火炬2.0](../优化/torch2.0)
+ [torch2.0](../优化/torch2.0)
  指南。

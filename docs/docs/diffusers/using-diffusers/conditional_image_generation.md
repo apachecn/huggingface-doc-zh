@@ -476,5 +476,5 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 有关如何优化代码以节省内存并加快推理速度的更多提示，请阅读
  [内存和速度](../optimization/fp16)
  和
- [火炬2.0](../优化/torch2.0)
+ [torch2.0](../优化/torch2.0)
  指南。

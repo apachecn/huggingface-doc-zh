@@ -818,5 +818,5 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 要了解更多信息，请查看
  [减少内存使用](../优化/内存)
  和
- [火炬2.0](../优化/torch2.0)
+ [torch2.0](../优化/torch2.0)
  指南。
