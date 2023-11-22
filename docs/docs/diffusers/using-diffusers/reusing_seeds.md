@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 通过确定性生成提高图像质量
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,109 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/reusing_seeds>
 
-开始写原始页面的翻译内容
+
+![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)
+
+
+![在 Studio Lab 中打开](https://studiolab.sagemaker.aws/studiolab.svg)
+
+
+提高生成图像质量的常见方法是
+ *确定性批次生成*
+ ，生成一批图像并选择一张图像进行改进，并在第二轮推理中提供更详细的提示。关键是传递一个列表
+ [`torch.Generator`](https://pytorch.org/docs/stable/generated/torch.Generator.html#generator)
+ 到批量图像生成的管道，并将每个
+ `发电机`
+ 到种子，以便您可以将其重新用于图像。
+
+
+让我们使用
+ [`runwayml/stable-diffusion-v1-5`](https://huggingface.co/runwayml/stable-diffusion-v1-5)
+ 例如，并生成以下提示的多个版本：
 
 
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+prompt = "Labrador in the style of Vermeer"
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+实例化管道
+ [DiffusionPipeline.from\_pretrained()](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline.from_pretrained)
+ 并将其放置在 GPU 上（如果可用）：
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+```
+import torch
+from diffusers import DiffusionPipeline
+from diffusers.utils import make_image_grid
 
-3. 图片参考(用图片的实际地址就行):
+pipe = DiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16, use_safetensors=True
+)
+pipe = pipe.to("cuda")
+```
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+现在，定义四种不同的
+ `发电机`
+ s 并分配每个
+ `发电机`
+ 一粒种子（
+ `0`
+ 到
+ `3`
+ ）这样你就可以重复使用
+ `发电机`
+ 稍后针对特定图像：
+
+
+
+```
+generator = [torch.Generator(device="cuda").manual_seed(i) for i in range(4)]
+```
+
+
+生成图像并查看：
+
+
+
+```
+images = pipe(prompt, generator=generator, num_images_per_prompt=4).images
+make_image_grid(images, rows=2, cols=2)
+```
+
+
+![img](https://huggingface.co/datasets/diffusers/diffusers-images-docs/resolve/main/reusabe_seeds.jpg)
+
+
+在此示例中，您将改进第一张图像 - 但实际上，您可以使用任何您想要的图像（甚至是带有双眼的图像！）。第一张图片使用了
+ `发电机`
+ 有种子
+ `0`
+ ，这样你就可以重用它
+ `发电机`
+ 进行第二轮推理。要提高图像质量，请在提示中添加一些附加文本：
+
+
+
+```
+prompt = [prompt + t for t in [", highly realistic", ", artsy", ", trending", ", colorful"]]
+generator = [torch.Generator(device="cuda").manual_seed(0) for i in range(4)]
+```
+
+
+创建四个带有种子的生成器
+ `0`
+ ，并生成另一批图像，所有这些图像都应该看起来像上一轮的第一张图像！
+
+
+
+```
+images = pipe(prompt, generator=generator).images
+make_image_grid(images, rows=2, cols=2)
+```
+
+
+![img](https://huggingface.co/datasets/diffusers/diffusers-images-docs/resolve/main/reusabe_seeds_2.jpg)

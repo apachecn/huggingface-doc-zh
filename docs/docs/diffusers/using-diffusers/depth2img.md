@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 文本引导深度图像生成
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,59 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/depth2img>
 
-开始写原始页面的翻译内容
+
+![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)
+
+
+![在 Studio Lab 中打开](https://studiolab.sagemaker.aws/studiolab.svg)
+
+
+这
+ [StableDiffusionDepth2ImgPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/stable_diffusion/depth2img#diffusers.StableDiffusionDepth2ImgPipeline)
+ 允许您传递文本提示和初始图像来调节新图像的生成。此外，您还可以通过
+ `深度图`
+ 以保留图像结构。如果不
+ `深度图`
+ 提供后，管道通过集成的自动预测深度
+ [深度估计模型](https://github.com/isl-org/MiDaS)
+ 。
+
+
+首先创建一个实例
+ [StableDiffusionDepth2ImgPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/stable_diffusion/depth2img#diffusers.StableDiffusionDepth2ImgPipeline)
+ :
 
 
 
-注意事项: 
-
-1. 代码参考:
-
-```py
+```
 import torch
+from diffusers import StableDiffusionDepth2ImgPipeline
+from diffusers.utils import load_image, make_image_grid
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+pipeline = StableDiffusionDepth2ImgPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-2-depth",
+    torch_dtype=torch.float16,
+    use_safetensors=True,
+).to("cuda")
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+现在将您的提示传递到管道。您还可以通过
+ `否定提示`
+ 防止某些单词指导图像的生成方式：
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+```
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+init_image = load_image(url)
+prompt = "two tigers"
+negative_prompt = "bad, deformed, ugly, bad anatomy"
+image = pipeline(prompt=prompt, image=init_image, negative_prompt=negative_prompt, strength=0.7).images[0]
+make_image_grid([init_image, image], rows=1, cols=2)
+```
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+| 	 Input	  | 	 Output	  |
+| --- | --- |
+|  |  |

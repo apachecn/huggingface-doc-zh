@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 概述
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,14 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/pipeline_overview>
 
-开始写原始页面的翻译内容
+
+管道是一种端到端的类，通过将独立训练的模型和调度程序捆绑在一起，提供了一种快速、简单的方法来使用扩散系统进行推理。模型和调度程序的某些组合定义了特定的管道类型，例如
+ [StableDiffusionXLPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/stable_diffusion/stable_diffusion_xl#diffusers.StableDiffusionXLPipeline)
+ 或者
+ [StableDiffusionControlNetPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/controlnet#diffusers.StableDiffusionControlNetPipeline)
+ ，具有特定的能力。所有管道类型都继承自基础管道
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline)
+ 班级;通过任何检查点，它会自动检测管道类型并加载必要的组件。
 
 
-
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
-
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+本节演示如何使用特定管道，例如 Stable Diffusion XL、ControlNet 和 DiffEdit。您还将学习如何使用稳定扩散模型的精炼版本来加速推理、如何创建可重现的管道以及如何使用和贡献社区管道。
