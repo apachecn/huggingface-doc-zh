@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# IA3
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,91 @@
 >
 > 原始地址：<https://huggingface.co/docs/peft/conceptual_guides/ia3>
 
-开始写原始页面的翻译内容
+
+本概念指南简要概述了
+ [IA3](https://arxiv.org/abs/2205.05638)
+ ，一种参数有效的微调技术
+旨在改进
+ [洛拉](./洛拉)
+ 。
+
+
+为了使微调更加高效，IA3（Infused Adapter by Inhibiting and Amplifying Inner Activations）
+使用学习到的向量重新调整内部激活。这些学习到的向量被注入注意力和前馈模块中
+在典型的基于变压器的架构中。这些学习到的向量是微调过程中唯一可训练的参数，因此原始向量
+重量保持冻结状态。处理学习向量（与 LoRA 等权重矩阵的学习低秩更新相反）
+使可训练参数的数量少得多。
+
+
+与 LoRA 类似，IA3 具有许多相同的优点：
+
+
+* IA3 通过大幅减少可训练参数的数量，使微调更加高效。 （对于 T0，IA3 模型只有大约 0.01% 的可训练参数，而即使 LoRA 也有 > 0.1%）
+* 原始预训练权重保持冻结，这意味着您可以拥有多个轻量级便携式 IA3 模型，用于在其之上构建的各种下游任务。
+* 使用 IA3 微调的模型的性能与完全微调的模型的性能相当。
+* IA3 不会添加任何推理延迟，因为适配器权重可以与基本模型合并。
+
+
+原则上，IA3 可以应用于神经网络中权重矩阵的任何子集，以减少可训练的数量
+参数。根据作者的实现，IA3 权重被添加到键、值和前馈层
+Transformer 模型的一部分。具体来说，对于 Transformer 模型，IA3 权重添加到键层和值层的输出以及第二前馈层的输入
+在每个变压器块中。
+
+
+给定注入 IA3 参数的目标层，可训练参数的数量
+可以根据权重矩阵的大小来确定。
+
+
+## PEFT中常用的IA3参数
 
 
 
-注意事项: 
+与 PEFT 支持的其他方法一样，要使用 IA3 微调模型，您需要：
 
-1. 代码参考:
 
-```py
-import torch
+1. 实例化基础模型。
+2. 创建配置（
+ `IA3配置`
+ )，您可以在其中定义 IA3 特定的参数。
+3. 将基础模型包裹起来
+ `get_peft_model()`
+ 获得可训练的
+ `佩夫特模型`
+ 。
+4. 训练
+ `佩夫特模型`
+ 就像您通常训练基本模型一样。
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+
+`IA3配置`
+ 允许您通过以下参数控制 IA3 如何应用于基础模型：
+
+
+* `目标模块`
+ ：应用 IA3 向量的模块（例如，注意力块）。
+* `前馈模块`
+ ：被视为前馈层的模块列表
+ `目标模块`
+ 。当学习到的向量乘以
+注意块的输出激活，向量与经典前馈层的输入相乘。注意
+ `前馈模块`
+ 必须是一个子集
+ `目标模块`
+ 。
+* `要保存的模块`
+ ：除了 IA3 层之外的模块列表，要设置为可训练并保存在最终检查点中。这些通常包括模型的自定义头，该头是为微调任务随机初始化的。
+
+
+## 用法示例
+
+
+
+对于序列分类任务，可以按如下方式初始化 Llama 模型的 IA3 配置：
+
+
+
 ```
-
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+peft_config = IA3Config(
+    task_type=TaskType.SEQ_CLS, target_modules=["k\_proj", "v\_proj", "down\_proj"], feedforward_modules=["down\_proj"]
+)
+```

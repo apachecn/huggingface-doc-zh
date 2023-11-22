@@ -90,7 +90,7 @@ PyTorch 支持
 
 
 首先，创建一个 Python 文件并导入
- `火炬.分布式`
+ `torch.distributed`
  和
  `torch.multiprocessing`
  设置分布式进程组并在每个 GPU 上生成用于推理的进程。您还应该初始化一个
@@ -173,7 +173,7 @@ if __name__ == "\_\_main\_\_":
 完成推理脚本后，使用
  `--nproc_per_node`
  指定要使用和调用的 GPU 数量的参数
- `火炬手`
+ `torchrun`
  运行脚本：
 
 

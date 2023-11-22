@@ -106,7 +106,7 @@ DreamBooth微调对超参数非常敏感，容易过拟合。我们建议您看�
  具有针对不同主题的推荐设置，帮助您选择合适的超参数。
 
 
- 火炬
+ torch
 
 
 隐藏 Pytorch 内容
@@ -217,7 +217,7 @@ python train_dreambooth_flax.py   --pretrained_model_name_or_path=$MODEL\_NAME  
  预先保存的图像。在大多数情况下，200-300 张图像效果很好。
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容
@@ -284,7 +284,7 @@ python train_dreambooth_flax.py   --pretrained_model_name_or_path=$MODEL\_NAME  
  ：
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容

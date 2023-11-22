@@ -50,7 +50,7 @@ source .env/bin/activate
 您还应该安装 🤗 Transformers，因为 🤗 Diffusers 依赖于它的模型：
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容
@@ -165,7 +165,7 @@ cd diffusers
 ```
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容

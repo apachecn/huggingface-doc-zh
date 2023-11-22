@@ -166,7 +166,7 @@ snapshot_download(
  如果您好奇的话，请在下面的部分中查看！
 
 
- 火炬
+ torch
 
 
 隐藏 Pytorch 内容
@@ -287,7 +287,7 @@ python textual_inversion_flax.py   --pretrained_model_name_or_path=$MODEL\_NAME 
 被添加到文本编码器嵌入矩阵中并因此被训练。
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容

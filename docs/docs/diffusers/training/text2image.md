@@ -116,7 +116,7 @@ xFormers 不适用于 Flax。
 
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容
@@ -326,7 +326,7 @@ python train_text_to_image_flax.py   --pretrained_model_name_or_path=$MODEL\_NAM
  ：
 
 
-火炬
+torch
 
 
 隐藏 Pytorch 内容

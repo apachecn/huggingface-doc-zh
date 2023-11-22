@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 安装
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,49 @@
 >
 > 原始地址：<https://huggingface.co/docs/peft/install>
 
-开始写原始页面的翻译内容
+
+在开始之前，您需要设置环境、安装适当的软件包并配置 🤗 PEFT。 🤗 PEFT 已测试
+ **Python 3.8+**
+ 。
+
+
+🤗 PEFT 可在 PyPI 和 GitHub 上使用：
+
+
+## 皮伊
 
 
 
-注意事项: 
+要从 PyPI 安装 🤗 PEFT：
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+pip install peft
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+## 来源
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+每天都会添加尚未发布的新功能，这也意味着可能存在一些错误。要试用它们，请从 GitHub 存储库安装：
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+```
+pip install git+https://github.com/huggingface/peft
+```
+
+
+如果您正在为库做出贡献或希望使用源代码并查看实时情况
+当您运行代码时，可以从本地克隆版本安装可编辑版本
+存储库：
+
+
+
+```
+git clone https://github.com/huggingface/peft
+cd peft
+pip install -e .
+```
