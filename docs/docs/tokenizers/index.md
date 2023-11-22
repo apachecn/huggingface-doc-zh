@@ -1,53 +1,36 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 分词器
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
-> 项目地址：<https://huggingface.apachecn.org/docs/tokenizers/>
+> 项目地址：<https://huggingface.apachecn.org/docs/tokenizers/index>
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/index>
 
-开始写原始页面的翻译内容
+
+快速、最先进的分词器，针对研究和研究进行了优化
+生产
 
 
+[🤗 标记器](https://github.com/huggingface/tokenizers)
+ 提供了一个
+实现当今最常用的分词器，重点是
+性能和多功能性。这些标记器也用于
+ [🤗 变形金刚](https://github.com/huggingface/transformers)
+ 。
 
-注意事项: 
 
-1. 代码参考:
+# 主要特点：
 
-```py
-import torch
+> 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
+>
+> 项目地址：<https://huggingface.apachecn.org/docs/tokenizers/index>
+>
+> 原始地址：<https://huggingface.co/docs/tokenizers/index>
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+* 使用当今最常用的分词器来训练新词汇并进行分词。
+* 由于 Rust 实现，速度极快（训练和标记化）。在服务器 CPU 上标记 1 GB 文本只需不到 20 秒。
+* 易于使用，而且用途极其广泛。
+* 专为研究和生产而设计。
+* 完全对准跟踪。即使使用破坏性标准化，也始终可以获得原始句子中与任何标记相对应的部分。
+* 执行所有预处理：截断、填充、添加模型需要的特殊标记。
