@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 概述
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,21 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/tutorials/tutorial_overview>
 
-开始写原始页面的翻译内容
+
+欢迎来到🧨扩散器！如果您不熟悉扩散模型和生成人工智能，并且想了解更多信息，那么您来对地方了。这些适合初学者的教程旨在对扩散模型进行简要介绍，并帮助您了解库基础知识 - 核心组件以及如何使用 🧨 扩散器。
 
 
+您将学习如何使用推理管道来快速生成事物，然后解构该管道以真正了解如何使用该库作为模块化工具箱来构建您自己的扩散系统。在下一课中，您将学习如何训练自己的扩散模型来生成您想要的内容。
 
-注意事项: 
 
-1. 代码参考:
+完成教程后，您将获得必要的技能，可以开始自己探索该库，并了解如何将其用于您自己的项目和应用程序。
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
+欢迎加入我们的社区
+ [不和谐](https://discord.com/invite/JfAtkvEtRb)
+ 或者
+ [论坛](https://discuss.huggingface.co/c/discussion-lated-to-httpsgithubcomhuggingfacediffusers/63)
+ 与其他用户和开发人员联系和协作！
 
-2. 公式参考:
 
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+让我们开始扩散吧！ 🧨
