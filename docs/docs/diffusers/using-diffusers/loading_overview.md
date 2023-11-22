@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 概述
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,12 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/loading_overview>
 
-开始写原始页面的翻译内容
+
+🧨 Diffusers 为生成任务提供了许多管道、模型和调度程序。为了使加载这些组件尽可能简单，我们提供了一个单一且统一的方法 -
+ `from_pretrained()`
+ - 从拥抱面加载任何这些组件
+ [中心](https://huggingface.co/models?library=diffusers&sort=downloads)
+ 或您的本地计算机。每当您加载管道或模型时，都会自动下载并缓存最新文件，以便您下次可以快速重用它们，而无需重新下载文件。
 
 
-
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
-
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+本节将向您展示有关加载管道、如何加载管道中的不同组件、如何加载检查点变体以及如何加载社区管道所需了解的所有信息。您还将学习如何加载调度程序并比较使用不同调度程序的速度和质量权衡。最后，您将了解如何转换和加载 KerasCV 检查点，以便您可以在 PyTorch 中通过 🧨 Diffusers 使用它们。

@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Kandinsky 2.1
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,4434 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/api/pipelines/kandinsky>
 
-开始写原始页面的翻译内容
+
+
+ Kandinsky 2.1 is created by
+ [Arseniy Shakhmatov](https://github.com/cene555) 
+ ,
+ [Anton Razzhigaev](https://github.com/razzant) 
+ ,
+ [Aleksandr Nikolich](https://github.com/AlexWortega) 
+ ,
+ [Igor Pavlov](https://github.com/boomb0om) 
+ ,
+ [Andrey Kuznetsov](https://github.com/kuznetsoffandrey) 
+ and
+ [Denis Dimitrov](https://github.com/denndimitrov) 
+.
+ 
 
 
 
-注意事项: 
+ The description from it’s GitHub page is:
+ 
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+*Kandinsky 2.1 inherits best practicies from Dall-E 2 and Latent diffusion, while introducing some new ideas. As text and image encoder it uses CLIP model and diffusion image prior (mapping) between latent spaces of CLIP modalities. This approach increases the visual performance of the model and unveils new horizons in blending images and text-guided image manipulation.* 
+
+
+
+
+ The original codebase can be found at
+ [ai-forever/Kandinsky-2](https://github.com/ai-forever/Kandinsky-2) 
+.
+ 
+
+
+
+
+ Check out the
+ [Kandinsky Community](https://huggingface.co/kandinsky-community) 
+ organization on the Hub for the official model checkpoints for tasks like text-to-image, image-to-image, and inpainting.
+ 
+
+
+## KandinskyPriorPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyPriorPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_prior.py#L128)
+
+
+
+ (
+ 
+
+
+ prior
+ 
+ : PriorTransformer
+ 
+
+
+
+
+ image\_encoder
+ 
+ : CLIPVisionModelWithProjection
+ 
+
+
+
+
+ text\_encoder
+ 
+ : CLIPTextModelWithProjection
+ 
+
+
+
+
+ tokenizer
+ 
+ : CLIPTokenizer
+ 
+
+
+
+
+ scheduler
+ 
+ : UnCLIPScheduler
+ 
+
+
+
+
+ image\_processor
+ 
+ : CLIPImageProcessor
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **prior** 
+ (
+ [PriorTransformer](/docs/diffusers/v0.23.0/en/api/models/prior_transformer#diffusers.PriorTransformer) 
+ ) —
+The canonincal unCLIP prior to approximate the image embedding from the text embedding.
+* **image\_encoder** 
+ (
+ `CLIPVisionModelWithProjection` 
+ ) —
+Frozen image-encoder.
+* **text\_encoder** 
+ (
+ `CLIPTextModelWithProjection` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `CLIPTokenizer` 
+ ) —
+Tokenizer of class
+ [CLIPTokenizer](https://huggingface.co/docs/transformers/v4.21.0/en/model_doc/clip#transformers.CLIPTokenizer) 
+.
+* **scheduler** 
+ (
+ `UnCLIPScheduler` 
+ ) —
+A scheduler to be used in combination with
+ `prior` 
+ to generate image embedding.
+
+
+ Pipeline for generating image prior for Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_prior.py#L397)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 25
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pt'
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`KandinskyPriorPipelineOutput` 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 25) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pt"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`KandinskyPriorPipelineOutput` 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+>>> from diffusers import KandinskyPipeline, KandinskyPriorPipeline
+>>> import torch
+
+>>> pipe_prior = KandinskyPriorPipeline.from_pretrained("kandinsky-community/kandinsky-2-1-prior")
+>>> pipe_prior.to("cuda")
+
+>>> prompt = "red cat, 4k photo"
+>>> out = pipe_prior(prompt)
+>>> image_emb = out.image_embeds
+>>> negative_image_emb = out.negative_image_embeds
+
+>>> pipe = KandinskyPipeline.from_pretrained("kandinsky-community/kandinsky-2-1")
+>>> pipe.to("cuda")
+
+>>> image = pipe(
+...     prompt,
+...     image_embeds=image_emb,
+...     negative_image_embeds=negative_image_emb,
+...     height=768,
+...     width=768,
+...     num_inference_steps=100,
+... ).images
+
+>>> image[0].save("cat.png")
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+#### 
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
+ interpolate
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_prior.py#L172)
+
+
+
+ (
+ 
+
+
+ images\_and\_prompts
+ 
+ : typing.List[typing.Union[str, PIL.Image.Image, torch.FloatTensor]]
+ 
+
+
+
+
+ weights
+ 
+ : typing.List[float]
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 25
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ negative\_prior\_prompt
+ 
+ : typing.Optional[str] = None
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : str = ''
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ device
+ 
+ = None
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`KandinskyPriorPipelineOutput` 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **images\_and\_prompts** 
+ (
+ `List[Union[str, PIL.Image.Image, torch.FloatTensor]]` 
+ ) —
+list of prompts and images to guide the image generation.
+weights — (
+ `List[float]` 
+ ):
+list of weights for each condition in
+ `images_and_prompts`
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 25) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **negative\_prior\_prompt** 
+ (
+ `str` 
+ ,
+ *optional* 
+ ) —
+The prompt not to guide the prior diffusion process. Ignored when not using guidance (i.e., ignored if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt not to guide the image generation. Ignored when not using guidance (i.e., ignored if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+`KandinskyPriorPipelineOutput` 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when using the prior pipeline for interpolation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+>>> from diffusers import KandinskyPriorPipeline, KandinskyPipeline
+>>> from diffusers.utils import load_image
+>>> import PIL
+
+>>> import torch
+>>> from torchvision import transforms
+
+>>> pipe_prior = KandinskyPriorPipeline.from_pretrained(
+...     "kandinsky-community/kandinsky-2-1-prior", torch_dtype=torch.float16
+... )
+>>> pipe_prior.to("cuda")
+
+>>> img1 = load_image(
+...     "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main"
+...     "/kandinsky/cat.png"
+... )
+
+>>> img2 = load_image(
+...     "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main"
+...     "/kandinsky/starry\_night.jpeg"
+... )
+
+>>> images_texts = ["a cat", img1, img2]
+>>> weights = [0.3, 0.3, 0.4]
+>>> image_emb, zero_image_emb = pipe_prior.interpolate(images_texts, weights)
+
+>>> pipe = KandinskyPipeline.from_pretrained("kandinsky-community/kandinsky-2-1", torch_dtype=torch.float16)
+>>> pipe.to("cuda")
+
+>>> image = pipe(
+...     "",
+...     image_embeds=image_emb,
+...     negative_image_embeds=zero_image_emb,
+...     height=768,
+...     width=768,
+...     num_inference_steps=150,
+... ).images[0]
+
+>>> image.save("starry\_cat.png")
+```
+
+
+## KandinskyPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky.py#L76)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : typing.Union[diffusers.schedulers.scheduling\_ddim.DDIMScheduler, diffusers.schedulers.scheduling\_ddpm.DDPMScheduler]
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (Union[
+ `DDIMScheduler` 
+ ,
+ `DDPMScheduler` 
+ ]) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ Decoder to generate the image from the latents.
+
+
+ Pipeline for text-to-image generation using Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky.py#L231)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ image\_embeds
+ 
+ : typing.Union[torch.FloatTensor, typing.List[torch.FloatTensor]]
+ 
+
+
+
+
+ negative\_image\_embeds
+ 
+ : typing.Union[torch.FloatTensor, typing.List[torch.FloatTensor]]
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for text prompt, that will be used to condition the image generation.
+* **negative\_image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for negative text prompt, will be used to condition the image generation.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+>>> from diffusers import KandinskyPipeline, KandinskyPriorPipeline
+>>> import torch
+
+>>> pipe_prior = KandinskyPriorPipeline.from_pretrained("kandinsky-community/Kandinsky-2-1-prior")
+>>> pipe_prior.to("cuda")
+
+>>> prompt = "red cat, 4k photo"
+>>> out = pipe_prior(prompt)
+>>> image_emb = out.image_embeds
+>>> negative_image_emb = out.negative_image_embeds
+
+>>> pipe = KandinskyPipeline.from_pretrained("kandinsky-community/kandinsky-2-1")
+>>> pipe.to("cuda")
+
+>>> image = pipe(
+...     prompt,
+...     image_embeds=image_emb,
+...     negative_image_embeds=negative_image_emb,
+...     height=768,
+...     width=768,
+...     num_inference_steps=100,
+... ).images
+
+>>> image[0].save("cat.png")
+```
+
+
+## KandinskyCombinedPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyCombinedPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L113)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : typing.Union[diffusers.schedulers.scheduling\_ddim.DDIMScheduler, diffusers.schedulers.scheduling\_ddpm.DDPMScheduler]
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+
+ prior\_prior
+ 
+ : PriorTransformer
+ 
+
+
+
+
+ prior\_image\_encoder
+ 
+ : CLIPVisionModelWithProjection
+ 
+
+
+
+
+ prior\_text\_encoder
+ 
+ : CLIPTextModelWithProjection
+ 
+
+
+
+
+ prior\_tokenizer
+ 
+ : CLIPTokenizer
+ 
+
+
+
+
+ prior\_scheduler
+ 
+ : UnCLIPScheduler
+ 
+
+
+
+
+ prior\_image\_processor
+ 
+ : CLIPImageProcessor
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (Union[
+ `DDIMScheduler` 
+ ,
+ `DDPMScheduler` 
+ ]) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ Decoder to generate the image from the latents.
+* **prior\_prior** 
+ (
+ [PriorTransformer](/docs/diffusers/v0.23.0/en/api/models/prior_transformer#diffusers.PriorTransformer) 
+ ) —
+The canonincal unCLIP prior to approximate the image embedding from the text embedding.
+* **prior\_image\_encoder** 
+ (
+ `CLIPVisionModelWithProjection` 
+ ) —
+Frozen image-encoder.
+* **prior\_text\_encoder** 
+ (
+ `CLIPTextModelWithProjection` 
+ ) —
+Frozen text-encoder.
+* **prior\_tokenizer** 
+ (
+ `CLIPTokenizer` 
+ ) —
+Tokenizer of class
+ [CLIPTokenizer](https://huggingface.co/docs/transformers/v4.21.0/en/model_doc/clip#transformers.CLIPTokenizer) 
+.
+* **prior\_scheduler** 
+ (
+ `UnCLIPScheduler` 
+ ) —
+A scheduler to be used in combination with
+ `prior` 
+ to generate image embedding.
+
+
+ Combined Pipeline for text-to-image generation using Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L214)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ prior\_guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ prior\_num\_inference\_steps
+ 
+ : int = 25
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **prior\_guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **prior\_num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+from diffusers import AutoPipelineForText2Image
+import torch
+
+pipe = AutoPipelineForText2Image.from_pretrained(
+    "kandinsky-community/kandinsky-2-1", torch_dtype=torch.float16
+)
+pipe.enable_model_cpu_offload()
+
+prompt = "A lion in galaxies, spirals, nebulae, stars, smoke, iridescent, intricate detail, octane render, 8k"
+
+image = pipe(prompt=prompt, num_inference_steps=25).images[0]
+```
+
+
+#### 
+
+
+
+
+ enable\_sequential\_cpu\_offload
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L195)
+
+
+
+ (
+ 
+
+
+ gpu\_id
+ 
+ = 0
+ 
+
+
+
+ )
+ 
+
+
+
+
+ Offloads all models (
+ `unet` 
+ ,
+ `text_encoder` 
+ ,
+ `vae` 
+ , and
+ `safety checker` 
+ state dicts) to CPU using 🤗
+Accelerate, significantly reducing memory usage. Models are moved to a
+ `torch.device('meta')` 
+ and loaded on a
+GPU only when their specific submodule’s
+ `forward` 
+ method is called. Offloading happens on a submodule basis.
+Memory savings are higher than using
+ `enable_model_cpu_offload` 
+ , but performance is lower.
+ 
+
+
+## KandinskyImg2ImgPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyImg2ImgPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_img2img.py#L98)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : DDIMScheduler
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (
+ [DDIMScheduler](/docs/diffusers/v0.23.0/en/api/schedulers/ddim#diffusers.DDIMScheduler) 
+ ) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ image encoder and decoder
+
+
+ Pipeline for image-to-image generation using Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_img2img.py#L293)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image, typing.List[torch.FloatTensor], typing.List[PIL.Image.Image]]
+ 
+
+
+
+
+ image\_embeds
+ 
+ : FloatTensor
+ 
+
+
+
+
+ negative\_image\_embeds
+ 
+ : FloatTensor
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ strength
+ 
+ : float = 0.3
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 7.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **image** 
+ (
+ `torch.FloatTensor` 
+ ,
+ `PIL.Image.Image` 
+ ) —
+ `Image` 
+ , or tensor representing an image batch, that will be used as the starting point for the
+process.
+* **image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for text prompt, that will be used to condition the image generation.
+* **negative\_image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for negative text prompt, will be used to condition the image generation.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **strength** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 0.3) —
+Conceptually, indicates how much to transform the reference
+ `image` 
+. Must be between 0 and 1.
+ `image` 
+ will be used as a starting point, adding more noise to it the larger the
+ `strength` 
+. The number of
+denoising steps depends on the amount of noise initially added. When
+ `strength` 
+ is 1, added noise will
+be maximum and the denoising process will run for the full number of iterations specified in
+ `num_inference_steps` 
+. A value of 1, therefore, essentially ignores
+ `image` 
+.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+>>> from diffusers import KandinskyImg2ImgPipeline, KandinskyPriorPipeline
+>>> from diffusers.utils import load_image
+>>> import torch
+
+>>> pipe_prior = KandinskyPriorPipeline.from_pretrained(
+...     "kandinsky-community/kandinsky-2-1-prior", torch_dtype=torch.float16
+... )
+>>> pipe_prior.to("cuda")
+
+>>> prompt = "A red cartoon frog, 4k"
+>>> image_emb, zero_image_emb = pipe_prior(prompt, return_dict=False)
+
+>>> pipe = KandinskyImg2ImgPipeline.from_pretrained(
+...     "kandinsky-community/kandinsky-2-1", torch_dtype=torch.float16
+... )
+>>> pipe.to("cuda")
+
+>>> init_image = load_image(
+...     "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main"
+...     "/kandinsky/frog.png"
+... )
+
+>>> image = pipe(
+...     prompt,
+...     image=init_image,
+...     image_embeds=image_emb,
+...     negative_image_embeds=zero_image_emb,
+...     height=768,
+...     width=768,
+...     num_inference_steps=100,
+...     strength=0.2,
+... ).images
+
+>>> image[0].save("red\_frog.png")
+```
+
+
+## KandinskyImg2ImgCombinedPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyImg2ImgCombinedPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L330)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : typing.Union[diffusers.schedulers.scheduling\_ddim.DDIMScheduler, diffusers.schedulers.scheduling\_ddpm.DDPMScheduler]
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+
+ prior\_prior
+ 
+ : PriorTransformer
+ 
+
+
+
+
+ prior\_image\_encoder
+ 
+ : CLIPVisionModelWithProjection
+ 
+
+
+
+
+ prior\_text\_encoder
+ 
+ : CLIPTextModelWithProjection
+ 
+
+
+
+
+ prior\_tokenizer
+ 
+ : CLIPTokenizer
+ 
+
+
+
+
+ prior\_scheduler
+ 
+ : UnCLIPScheduler
+ 
+
+
+
+
+ prior\_image\_processor
+ 
+ : CLIPImageProcessor
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (Union[
+ `DDIMScheduler` 
+ ,
+ `DDPMScheduler` 
+ ]) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ Decoder to generate the image from the latents.
+* **prior\_prior** 
+ (
+ [PriorTransformer](/docs/diffusers/v0.23.0/en/api/models/prior_transformer#diffusers.PriorTransformer) 
+ ) —
+The canonincal unCLIP prior to approximate the image embedding from the text embedding.
+* **prior\_image\_encoder** 
+ (
+ `CLIPVisionModelWithProjection` 
+ ) —
+Frozen image-encoder.
+* **prior\_text\_encoder** 
+ (
+ `CLIPTextModelWithProjection` 
+ ) —
+Frozen text-encoder.
+* **prior\_tokenizer** 
+ (
+ `CLIPTokenizer` 
+ ) —
+Tokenizer of class
+ [CLIPTokenizer](https://huggingface.co/docs/transformers/v4.21.0/en/model_doc/clip#transformers.CLIPTokenizer) 
+.
+* **prior\_scheduler** 
+ (
+ `UnCLIPScheduler` 
+ ) —
+A scheduler to be used in combination with
+ `prior` 
+ to generate image embedding.
+
+
+ Combined Pipeline for image-to-image generation using Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L432)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image, typing.List[torch.FloatTensor], typing.List[PIL.Image.Image]]
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ strength
+ 
+ : float = 0.3
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ prior\_guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ prior\_num\_inference\_steps
+ 
+ : int = 25
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **image** 
+ (
+ `torch.FloatTensor` 
+ ,
+ `PIL.Image.Image` 
+ ,
+ `np.ndarray` 
+ ,
+ `List[torch.FloatTensor]` 
+ ,
+ `List[PIL.Image.Image]` 
+ , or
+ `List[np.ndarray]` 
+ ) —
+ `Image` 
+ , or tensor representing an image batch, that will be used as the starting point for the
+process. Can also accept image latents as
+ `image` 
+ , if passing latents directly, it will not be encoded
+again.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **strength** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 0.3) —
+Conceptually, indicates how much to transform the reference
+ `image` 
+. Must be between 0 and 1.
+ `image` 
+ will be used as a starting point, adding more noise to it the larger the
+ `strength` 
+. The number of
+denoising steps depends on the amount of noise initially added. When
+ `strength` 
+ is 1, added noise will
+be maximum and the denoising process will run for the full number of iterations specified in
+ `num_inference_steps` 
+. A value of 1, therefore, essentially ignores
+ `image` 
+.
+* **prior\_guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **prior\_num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+from diffusers import AutoPipelineForImage2Image
+import torch
+import requests
+from io import BytesIO
+from PIL import Image
+import os
+
+pipe = AutoPipelineForImage2Image.from_pretrained(
+    "kandinsky-community/kandinsky-2-1", torch_dtype=torch.float16
+)
+pipe.enable_model_cpu_offload()
+
+prompt = "A fantasy landscape, Cinematic lighting"
+negative_prompt = "low quality, bad quality"
+
+url = "https://raw.githubusercontent.com/CompVis/stable-diffusion/main/assets/stable-samples/img2img/sketch-mountains-input.jpg"
+
+response = requests.get(url)
+image = Image.open(BytesIO(response.content)).convert("RGB")
+image.thumbnail((768, 768))
+
+image = pipe(prompt=prompt, image=original_image, num_inference_steps=25).images[0]
+```
+
+
+#### 
+
+
+
+
+ enable\_sequential\_cpu\_offload
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L412)
+
+
+
+ (
+ 
+
+
+ gpu\_id
+ 
+ = 0
+ 
+
+
+
+ )
+ 
+
+
+
+
+ Offloads all models to CPU using accelerate, significantly reducing memory usage. When called, unet,
+text\_encoder, vae and safety checker have their state dicts saved to CPU and then are moved to a
+ `torch.device('meta') and loaded to GPU only when their specific submodule has its` 
+ forward
+ `method called. Note that offloading happens on a submodule basis. Memory savings are higher than with` 
+ enable\_model\_cpu\_offload`, but performance is lower.
+ 
+
+
+## KandinskyInpaintPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyInpaintPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_inpaint.py#L240)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : DDIMScheduler
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (
+ [DDIMScheduler](/docs/diffusers/v0.23.0/en/api/schedulers/ddim#diffusers.DDIMScheduler) 
+ ) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ image encoder and decoder
+
+
+ Pipeline for text-guided image inpainting using Kandinsky2.1
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_inpaint.py#L396)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image]
+ 
+
+
+
+
+ mask\_image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image, numpy.ndarray]
+ 
+
+
+
+
+ image\_embeds
+ 
+ : FloatTensor
+ 
+
+
+
+
+ negative\_image\_embeds
+ 
+ : FloatTensor
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **image** 
+ (
+ `torch.FloatTensor` 
+ ,
+ `PIL.Image.Image` 
+ or
+ `np.ndarray` 
+ ) —
+ `Image` 
+ , or tensor representing an image batch, that will be used as the starting point for the
+process.
+* **mask\_image** 
+ (
+ `PIL.Image.Image` 
+ ,
+ `torch.FloatTensor` 
+ or
+ `np.ndarray` 
+ ) —
+ `Image` 
+ , or a tensor representing an image batch, to mask
+ `image` 
+. White pixels in the mask will be
+repainted, while black pixels will be preserved. You can pass a pytorch tensor as mask only if the
+image you passed is a pytorch tensor, and it should contain one color channel (L) instead of 3, so the
+expected shape would be either
+ `(B, 1, H, W,)` 
+ ,
+ `(B, H, W)` 
+ ,
+ `(1, H, W)` 
+ or
+ `(H, W)` 
+ If image is an PIL
+image or numpy array, mask should also be a either PIL image or numpy array. If it is a PIL image, it
+will be converted to a single channel (luminance) before use. If it is a nummpy array, the expected
+shape is
+ `(H, W)` 
+.
+* **image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for text prompt, that will be used to condition the image generation.
+* **negative\_image\_embeds** 
+ (
+ `torch.FloatTensor` 
+ or
+ `List[torch.FloatTensor]` 
+ ) —
+The clip image embeddings for negative text prompt, will be used to condition the image generation.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+>>> from diffusers import KandinskyInpaintPipeline, KandinskyPriorPipeline
+>>> from diffusers.utils import load_image
+>>> import torch
+>>> import numpy as np
+
+>>> pipe_prior = KandinskyPriorPipeline.from_pretrained(
+...     "kandinsky-community/kandinsky-2-1-prior", torch_dtype=torch.float16
+... )
+>>> pipe_prior.to("cuda")
+
+>>> prompt = "a hat"
+>>> image_emb, zero_image_emb = pipe_prior(prompt, return_dict=False)
+
+>>> pipe = KandinskyInpaintPipeline.from_pretrained(
+...     "kandinsky-community/kandinsky-2-1-inpaint", torch_dtype=torch.float16
+... )
+>>> pipe.to("cuda")
+
+>>> init_image = load_image(
+...     "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main"
+...     "/kandinsky/cat.png"
+... )
+
+>>> mask = np.zeros((768, 768), dtype=np.float32)
+>>> mask[:250, 250:-250] = 1
+
+>>> out = pipe(
+...     prompt,
+...     image=init_image,
+...     mask_image=mask,
+...     image_embeds=image_emb,
+...     negative_image_embeds=zero_image_emb,
+...     height=768,
+...     width=768,
+...     num_inference_steps=50,
+... )
+
+>>> image = out.images[0]
+>>> image.save("cat\_with\_hat.png")
+```
+
+
+## KandinskyInpaintCombinedPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ KandinskyInpaintCombinedPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L570)
+
+
+
+ (
+ 
+
+
+ text\_encoder
+ 
+ : MultilingualCLIP
+ 
+
+
+
+
+ tokenizer
+ 
+ : XLMRobertaTokenizer
+ 
+
+
+
+
+ unet
+ 
+ : UNet2DConditionModel
+ 
+
+
+
+
+ scheduler
+ 
+ : typing.Union[diffusers.schedulers.scheduling\_ddim.DDIMScheduler, diffusers.schedulers.scheduling\_ddpm.DDPMScheduler]
+ 
+
+
+
+
+ movq
+ 
+ : VQModel
+ 
+
+
+
+
+ prior\_prior
+ 
+ : PriorTransformer
+ 
+
+
+
+
+ prior\_image\_encoder
+ 
+ : CLIPVisionModelWithProjection
+ 
+
+
+
+
+ prior\_text\_encoder
+ 
+ : CLIPTextModelWithProjection
+ 
+
+
+
+
+ prior\_tokenizer
+ 
+ : CLIPTokenizer
+ 
+
+
+
+
+ prior\_scheduler
+ 
+ : UnCLIPScheduler
+ 
+
+
+
+
+ prior\_image\_processor
+ 
+ : CLIPImageProcessor
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **text\_encoder** 
+ (
+ `MultilingualCLIP` 
+ ) —
+Frozen text-encoder.
+* **tokenizer** 
+ (
+ `XLMRobertaTokenizer` 
+ ) —
+Tokenizer of class
+* **scheduler** 
+ (Union[
+ `DDIMScheduler` 
+ ,
+ `DDPMScheduler` 
+ ]) —
+A scheduler to be used in combination with
+ `unet` 
+ to generate image latents.
+* **unet** 
+ (
+ [UNet2DConditionModel](/docs/diffusers/v0.23.0/en/api/models/unet2d-cond#diffusers.UNet2DConditionModel) 
+ ) —
+Conditional U-Net architecture to denoise the image embedding.
+* **movq** 
+ (
+ [VQModel](/docs/diffusers/v0.23.0/en/api/models/vq#diffusers.VQModel) 
+ ) —
+MoVQ Decoder to generate the image from the latents.
+* **prior\_prior** 
+ (
+ [PriorTransformer](/docs/diffusers/v0.23.0/en/api/models/prior_transformer#diffusers.PriorTransformer) 
+ ) —
+The canonincal unCLIP prior to approximate the image embedding from the text embedding.
+* **prior\_image\_encoder** 
+ (
+ `CLIPVisionModelWithProjection` 
+ ) —
+Frozen image-encoder.
+* **prior\_text\_encoder** 
+ (
+ `CLIPTextModelWithProjection` 
+ ) —
+Frozen text-encoder.
+* **prior\_tokenizer** 
+ (
+ `CLIPTokenizer` 
+ ) —
+Tokenizer of class
+ [CLIPTokenizer](https://huggingface.co/docs/transformers/v4.21.0/en/model_doc/clip#transformers.CLIPTokenizer) 
+.
+* **prior\_scheduler** 
+ (
+ `UnCLIPScheduler` 
+ ) —
+A scheduler to be used in combination with
+ `prior` 
+ to generate image embedding.
+
+
+ Combined Pipeline for generation using Kandinsky
+ 
+
+
+
+ This model inherits from
+ [DiffusionPipeline](/docs/diffusers/v0.23.0/en/api/pipelines/overview#diffusers.DiffusionPipeline) 
+. Check the superclass documentation for the generic methods the
+library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
+ 
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L672)
+
+
+
+ (
+ 
+
+
+ prompt
+ 
+ : typing.Union[str, typing.List[str]]
+ 
+
+
+
+
+ image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image, typing.List[torch.FloatTensor], typing.List[PIL.Image.Image]]
+ 
+
+
+
+
+ mask\_image
+ 
+ : typing.Union[torch.FloatTensor, PIL.Image.Image, typing.List[torch.FloatTensor], typing.List[PIL.Image.Image]]
+ 
+
+
+
+
+ negative\_prompt
+ 
+ : typing.Union[str, typing.List[str], NoneType] = None
+ 
+
+
+
+
+ num\_inference\_steps
+ 
+ : int = 100
+ 
+
+
+
+
+ guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ num\_images\_per\_prompt
+ 
+ : int = 1
+ 
+
+
+
+
+ height
+ 
+ : int = 512
+ 
+
+
+
+
+ width
+ 
+ : int = 512
+ 
+
+
+
+
+ prior\_guidance\_scale
+ 
+ : float = 4.0
+ 
+
+
+
+
+ prior\_num\_inference\_steps
+ 
+ : int = 25
+ 
+
+
+
+
+ generator
+ 
+ : typing.Union[torch.\_C.Generator, typing.List[torch.\_C.Generator], NoneType] = None
+ 
+
+
+
+
+ latents
+ 
+ : typing.Optional[torch.FloatTensor] = None
+ 
+
+
+
+
+ output\_type
+ 
+ : typing.Optional[str] = 'pil'
+ 
+
+
+
+
+ callback
+ 
+ : typing.Union[typing.Callable[[int, int, torch.FloatTensor], NoneType], NoneType] = None
+ 
+
+
+
+
+ callback\_steps
+ 
+ : int = 1
+ 
+
+
+
+
+ return\_dict
+ 
+ : bool = True
+ 
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+ Parameters
+ 
+
+
+
+
+* **prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ) —
+The prompt or prompts to guide the image generation.
+* **image** 
+ (
+ `torch.FloatTensor` 
+ ,
+ `PIL.Image.Image` 
+ ,
+ `np.ndarray` 
+ ,
+ `List[torch.FloatTensor]` 
+ ,
+ `List[PIL.Image.Image]` 
+ , or
+ `List[np.ndarray]` 
+ ) —
+ `Image` 
+ , or tensor representing an image batch, that will be used as the starting point for the
+process. Can also accept image latents as
+ `image` 
+ , if passing latents directly, it will not be encoded
+again.
+* **mask\_image** 
+ (
+ `np.array` 
+ ) —
+Tensor representing an image batch, to mask
+ `image` 
+. White pixels in the mask will be repainted, while
+black pixels will be preserved. If
+ `mask_image` 
+ is a PIL image, it will be converted to a single
+channel (luminance) before use. If it’s a tensor, it should contain one color channel (L) instead of 3,
+so the expected shape would be
+ `(B, H, W, 1)` 
+.
+* **negative\_prompt** 
+ (
+ `str` 
+ or
+ `List[str]` 
+ ,
+ *optional* 
+ ) —
+The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored
+if
+ `guidance_scale` 
+ is less than
+ `1` 
+ ).
+* **num\_images\_per\_prompt** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The number of images to generate per prompt.
+* **num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **height** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The height in pixels of the generated image.
+* **width** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 512) —
+The width in pixels of the generated image.
+* **prior\_guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **prior\_num\_inference\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 100) —
+The number of denoising steps. More denoising steps usually lead to a higher quality image at the
+expense of slower inference.
+* **guidance\_scale** 
+ (
+ `float` 
+ ,
+ *optional* 
+ , defaults to 4.0) —
+Guidance scale as defined in
+ [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) 
+.
+ `guidance_scale` 
+ is defined as
+ `w` 
+ of equation 2. of
+ [Imagen
+Paper](https://arxiv.org/pdf/2205.11487.pdf) 
+. Guidance scale is enabled by setting
+ `guidance_scale > 1` 
+. Higher guidance scale encourages to generate images that are closely linked to the text
+ `prompt` 
+ ,
+usually at the expense of lower image quality.
+* **generator** 
+ (
+ `torch.Generator` 
+ or
+ `List[torch.Generator]` 
+ ,
+ *optional* 
+ ) —
+One or a list of
+ [torch generator(s)](https://pytorch.org/docs/stable/generated/torch.Generator.html) 
+ to make generation deterministic.
+* **latents** 
+ (
+ `torch.FloatTensor` 
+ ,
+ *optional* 
+ ) —
+Pre-generated noisy latents, sampled from a Gaussian distribution, to be used as inputs for image
+generation. Can be used to tweak the same generation with different prompts. If not provided, a latents
+tensor will ge generated by sampling using the supplied random
+ `generator` 
+.
+* **output\_type** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `"pil"` 
+ ) —
+The output format of the generate image. Choose between:
+ `"pil"` 
+ (
+ `PIL.Image.Image` 
+ ),
+ `"np"` 
+ (
+ `np.array` 
+ ) or
+ `"pt"` 
+ (
+ `torch.Tensor` 
+ ).
+* **callback** 
+ (
+ `Callable` 
+ ,
+ *optional* 
+ ) —
+A function that calls every
+ `callback_steps` 
+ steps during inference. The function is called with the
+following arguments:
+ `callback(step: int, timestep: int, latents: torch.FloatTensor)` 
+.
+* **callback\_steps** 
+ (
+ `int` 
+ ,
+ *optional* 
+ , defaults to 1) —
+The frequency at which the
+ `callback` 
+ function is called. If not specified, the callback is called at
+every step.
+* **return\_dict** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether or not to return a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ instead of a plain tuple.
+
+
+
+
+ Returns
+ 
+
+
+
+
+ export const metadata = 'undefined';
+ 
+
+[ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ or
+ `tuple` 
+
+
+
+
+ Function invoked when calling the pipeline for generation.
+ 
+
+
+ Examples:
+ 
+
+
+
+```
+from diffusers import AutoPipelineForInpainting
+from diffusers.utils import load_image
+import torch
+import numpy as np
+
+pipe = AutoPipelineForInpainting.from_pretrained(
+    "kandinsky-community/kandinsky-2-1-inpaint", torch_dtype=torch.float16
+)
+pipe.enable_model_cpu_offload()
+
+prompt = "A fantasy landscape, Cinematic lighting"
+negative_prompt = "low quality, bad quality"
+
+original_image = load_image(
+    "https://huggingface.co/datasets/hf-internal-testing/diffusers-images/resolve/main" "/kandinsky/cat.png"
+)
+
+mask = np.zeros((768, 768), dtype=np.float32)
+# Let's mask out an area above the cat's head
+mask[:250, 250:-250] = 1
+
+image = pipe(prompt=prompt, image=original_image, mask_image=mask, num_inference_steps=25).images[0]
+```
+
+
+#### 
+
+
+
+
+ enable\_sequential\_cpu\_offload
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/kandinsky/pipeline_kandinsky_combined.py#L652)
+
+
+
+ (
+ 
+
+
+ gpu\_id
+ 
+ = 0
+ 
+
+
+
+ )
+ 
+
+
+
+
+ Offloads all models to CPU using accelerate, significantly reducing memory usage. When called, unet,
+text\_encoder, vae and safety checker have their state dicts saved to CPU and then are moved to a
+ `torch.device('meta') and loaded to GPU only when their specific submodule has its` 
+ forward
+ `method called. Note that offloading happens on a submodule basis. Memory savings are higher than with` 
+ enable\_model\_cpu\_offload`, but performance is lower.

@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Encode Inputs
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,92 @@
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/api/encode-inputs>
 
-开始写原始页面的翻译内容
+
+
+ These types represent all the different kinds of input that a
+ [Tokenizer](/docs/tokenizers/v0.13.4.rc2/en/api/tokenizer#tokenizers.Tokenizer) 
+ accepts
+when using
+ `encode_batch()` 
+.
+ 
+
+
+## TextEncodeInput
 
 
 
-注意事项: 
+`tokenizers.TextEncodeInput` 
 
-1. 代码参考:
+ Represents a textual input for encoding. Can be either:
+ 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
+* A single sequence:
+ [TextInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.TextInputSequence)
+* A pair of sequences:
+	+ A Tuple of
+	 [TextInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.TextInputSequence)
+	+ Or a List of
+	 [TextInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.TextInputSequence) 
+	 of size 2
 
-2. 公式参考:
 
-1) 无需换行的写法: 
 
-$\sqrt{w^T*w}$
+ alias of
+ `Union[str, Tuple[str, str], List[str]]` 
+.
+ 
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+## PreTokenizedEncodeInput
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+`tokenizers.PreTokenizedEncodeInput` 
+
+ Represents a pre-tokenized input for encoding. Can be either:
+ 
+
+
+* A single sequence:
+ [PreTokenizedInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.PreTokenizedInputSequence)
+* A pair of sequences:
+	+ A Tuple of
+	 [PreTokenizedInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.PreTokenizedInputSequence)
+	+ Or a List of
+	 [PreTokenizedInputSequence](/docs/tokenizers/api/input-sequences#tokenizers.PreTokenizedInputSequence) 
+	 of size 2
+
+
+
+ alias of
+ `Union[List[str], Tuple[str], Tuple[Union[List[str], Tuple[str]], Union[List[str], Tuple[str]]], List[Union[List[str], Tuple[str]]]]` 
+.
+ 
+
+
+## EncodeInput
+
+
+
+`tokenizers.EncodeInput` 
+
+ Represents all the possible types of input for encoding. Can be:
+ 
+
+
+* When
+ `is_pretokenized=False` 
+ :
+ [TextEncodeInput](#tokenizers.TextEncodeInput)
+* When
+ `is_pretokenized=True` 
+ :
+ [PreTokenizedEncodeInput](#tokenizers.PreTokenizedEncodeInput)
+
+
+
+ alias of
+ `Union[str, Tuple[str, str], List[str], Tuple[str], Tuple[Union[List[str], Tuple[str]], Union[List[str], Tuple[str]]], List[Union[List[str], Tuple[str]]]]` 
+.

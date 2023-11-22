@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Spectrogram Diffusion
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,189 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/api/pipelines/spectrogram_diffusion>
 
-开始写原始页面的翻译内容
+
+
+[Spectrogram Diffusion](https://huggingface.co/papers/2206.05408) 
+ is by Curtis Hawthorne, Ian Simon, Adam Roberts, Neil Zeghidour, Josh Gardner, Ethan Manilow, and Jesse Engel.
+ 
 
 
 
-注意事项: 
+*An ideal music synthesizer should be both interactive and expressive, generating high-fidelity audio in realtime for arbitrary combinations of instruments and notes. Recent neural synthesizers have exhibited a tradeoff between domain-specific models that offer detailed control of only specific instruments, or raw waveform models that can train on any music but with minimal control and slow generation. In this work, we focus on a middle ground of neural synthesizers that can generate audio from MIDI sequences with arbitrary combinations of instruments in realtime. This enables training on a wide range of transcription datasets with a single model, which in turn offers note-level control of composition and instrumentation across a wide range of instruments. We use a simple two-stage process: MIDI to spectrograms with an encoder-decoder Transformer, then spectrograms to audio with a generative adversarial network (GAN) spectrogram inverter. We compare training the decoder as an autoregressive model and as a Denoising Diffusion Probabilistic Model (DDPM) and find that the DDPM approach is superior both qualitatively and as measured by audio reconstruction and Fréchet distance metrics. Given the interactivity and generality of this approach, we find this to be a promising first step towards interactive and expressive neural synthesis for arbitrary combinations of instruments and notes.* 
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
+ The original codebase can be found at
+ [magenta/music-spectrogram-diffusion](https://github.com/magenta/music-spectrogram-diffusion) 
+.
+ 
 
-1) 无需换行的写法: 
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+![img](https://storage.googleapis.com/music-synthesis-with-spectrogram-diffusion/architecture.png)
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+ As depicted above the model takes as input a MIDI file and tokenizes it into a sequence of 5 second intervals. Each tokenized interval then together with positional encodings is passed through the Note Encoder and its representation is concatenated with the previous window’s generated spectrogram representation obtained via the Context Encoder. For the initial 5 second window this is set to zero. The resulting context is then used as conditioning to sample the denoised Spectrogram from the MIDI window and we concatenate this spectrogram to the final output as well as use it for the context of the next MIDI window. The process repeats till we have gone over all the MIDI inputs. Finally a MelGAN decoder converts the potentially long spectrogram to audio which is the final result of this pipeline.
+ 
+
+
+
+
+ Make sure to check out the Schedulers
+ [guide](../../using-diffusers/schedulers) 
+ to learn how to explore the tradeoff between scheduler speed and quality, and see the
+ [reuse components across pipelines](../../using-diffusers/loading#reuse-components-across-pipelines) 
+ section to learn how to efficiently load the same components into multiple pipelines.
+ 
+
+
+## SpectrogramDiffusionPipeline
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ SpectrogramDiffusionPipeline
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/dummy_transformers_and_torch_and_note_seq_objects.py#L5)
+
+
+
+ (
+ 
+
+
+ \*args
+ 
+
+
+ \*\*kwargs
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+#### 
+
+
+
+
+ \_\_call\_\_
+
+
+
+
+ (
+ 
+
+
+ \*args
+ 
+
+
+ \*\*kwargs
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ Call self as a function.
+ 
+
+
+## AudioPipelineOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ AudioPipelineOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/pipeline_utils.py#L124)
+
+
+
+ (
+ 
+
+
+ audios
+ 
+ : ndarray
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **audios** 
+ (
+ `np.ndarray` 
+ ) —
+List of denoised audio samples of a NumPy array of shape
+ `(batch_size, num_channels, sample_rate)` 
+.
+
+
+ Output class for audio pipelines.

@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Decoders
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,334 @@
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/api/decoders>
 
-开始写原始页面的翻译内容
+
+## BPEDecoder
 
 
 
-注意事项: 
 
-1. 代码参考:
+### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+ class
+ 
 
-$\sqrt{w^T*w}$
+ tokenizers.decoders.
+ 
 
-2) 需要换行的写法：
+ BPEDecoder
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+ (
+ 
+
+
+ suffix
+ 
+ = '</w>'
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **suffix** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `</w>` 
+ ) —
+The suffix that was used to caracterize an end-of-word. This suffix will
+be replaced by whitespaces during the decoding
+
+
+ BPEDecoder Decoder
+ 
+
+
+## ByteLevel
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.decoders.
+ 
+
+ ByteLevel
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ ByteLevel Decoder
+ 
+
+
+
+ This decoder is to be used in tandem with the
+ [ByteLevel](/docs/tokenizers/v0.13.4.rc2/en/api/pre-tokenizers#tokenizers.pre_tokenizers.ByteLevel) 
+[PreTokenizer](/docs/tokenizers/v0.13.4.rc2/en/api/pre-tokenizers#tokenizers.pre_tokenizers.PreTokenizer) 
+.
+ 
+
+
+## CTC
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.decoders.
+ 
+
+ CTC
+
+
+
+
+ (
+ 
+
+
+ pad\_token
+ 
+ = '<pad>'
+ 
+
+
+
+
+ word\_delimiter\_token
+ 
+ = '|'
+ 
+
+
+
+
+ cleanup
+ 
+ = True
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **pad\_token** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `<pad>` 
+ ) —
+The pad token used by CTC to delimit a new token.
+* **word\_delimiter\_token** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `|` 
+ ) —
+The word delimiter token. It will be replaced by a
+* **cleanup** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to cleanup some tokenization artifacts.
+Mainly spaces before punctuation, and some abbreviated english forms.
+
+
+ CTC Decoder
+ 
+
+
+## Metaspace
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.decoders.
+ 
+
+ Metaspace
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **replacement** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `▁` 
+ ) —
+The replacement character. Must be exactly one character. By default we
+use the
+ *▁* 
+ (U+2581) meta symbol (Same as in SentencePiece).
+* **add\_prefix\_space** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to add a space to the first word if there isn’t already one. This
+lets us treat
+ *hello* 
+ exactly like
+ *say hello* 
+.
+
+
+ Metaspace Decoder
+ 
+
+
+## WordPiece
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.decoders.
+ 
+
+ WordPiece
+
+
+
+
+ (
+ 
+
+
+ prefix
+ 
+ = '##'
+ 
+
+
+
+
+ cleanup
+ 
+ = True
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **prefix** 
+ (
+ `str` 
+ ,
+ *optional* 
+ , defaults to
+ `##` 
+ ) —
+The prefix to use for subwords that are not a beginning-of-word
+* **cleanup** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to cleanup some tokenization artifacts. Mainly spaces before punctuation,
+and some abbreviated english forms.
+
+
+ WordPiece Decoder

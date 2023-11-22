@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 安装
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,104 @@
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/installation>
 
-开始写原始页面的翻译内容
+
+🤗 Tokenizers 在 Python 3.5+ 上进行了测试。
+
+
+您应该在中安装 🤗 Tokenizers
+ [虚拟环境](https://docs.python.org/3/library/venv.html)
+ 。如果你是
+不熟悉Python虚拟环境，请查看
+ [用户
+指南](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+ 。
+使用您要使用的 Python 版本创建虚拟环境
+使用并激活它。
+
+
+## 使用 pip 安装
 
 
 
-注意事项: 
+🤗 Tokenizers 可以使用 pip 安装，如下所示：
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+pip install tokenizers
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+## 从源安装
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+要使用此方法，您需要安装 Rust 语言。你
+可以按照
+ [官方
+指南](https://www.rust-lang.org/learn/get-started)
+ 了解更多
+信息。
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+如果您使用的是基于 UNIX 的操作系统，安装应该很简单
+运行时：
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+
+或者您可以使用以下命令轻松更新它：
+
+
+
+```
+rustup update
+```
+
+
+安装 Rust 后，我​​们就可以开始检索 🤗 的源代码
+分词器：
+
+
+
+```
+git clone https://github.com/huggingface/tokenizers
+```
+
+
+然后我们进入python绑定文件夹：
+
+
+
+```
+cd tokenizers/bindings/python
+```
+
+
+此时你应该有你的
+ 虚拟环境
+ 已经
+活性。为了编译 🤗 Tokenizers，您需要安装
+Python包
+ `setuptools_rust`
+ ：
+
+
+
+```
+pip install setuptools_rust
+```
+
+
+然后你就可以在你的虚拟机中编译并安装 🤗 Tokenizers
+环境使用以下命令：
+
+
+
+```
+python setup.py install
+```

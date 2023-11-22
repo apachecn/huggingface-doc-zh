@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Outputs
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,500 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/api/outputs>
 
-开始写原始页面的翻译内容
+
+
+ All models outputs are subclasses of
+ [BaseOutput](/docs/diffusers/v0.23.0/en/api/outputs#diffusers.utils.BaseOutput) 
+ , data structures containing all the information returned by the model. The outputs can also be used as tuples or dictionaries.
+ 
 
 
 
-注意事项: 
+ For example:
+ 
 
-1. 代码参考:
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```
+from diffusers import DDIMPipeline
+
+pipeline = DDIMPipeline.from_pretrained("google/ddpm-cifar10-32")
+outputs = pipeline()
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
 
-$\sqrt{w^T*w}$
+ The
+ `outputs` 
+ object is a
+ [ImagePipelineOutput](/docs/diffusers/v0.23.0/en/api/pipelines/ddim#diffusers.ImagePipelineOutput) 
+ which means it has an image attribute.
+ 
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
+ You can access each attribute as you normally would or with a keyword lookup, and if that attribute is not returned by the model, you will get
+ `None` 
+ :
+ 
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+```
+outputs.images
+outputs["images"]
+```
+
+
+
+ When considering the
+ `outputs` 
+ object as a tuple, it only considers the attributes that don’t have
+ `None` 
+ values.
+For instance, retrieving an image by indexing into it returns the tuple
+ `(outputs.images)` 
+ :
+ 
+
+
+
+```
+outputs[:1]
+```
+
+
+
+
+ To check a specific pipeline or model output, refer to its corresponding API documentation.
+ 
+
+
+## BaseOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.utils.
+ 
+
+ BaseOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/outputs.py#L40)
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ Base class for all model outputs as dataclass. Has a
+ `__getitem__` 
+ that allows indexing by integer or slice (like a
+tuple) or strings (like a dictionary) that will ignore the
+ `None` 
+ attributes. Otherwise behaves like a regular
+Python dictionary.
+ 
+
+
+
+
+ You can’t unpack a
+ `BaseOutput` 
+ directly. Use the
+ [to\_tuple()](/docs/diffusers/v0.23.0/en/api/outputs#diffusers.utils.BaseOutput.to_tuple) 
+ method to convert it to a tuple
+first.
+ 
+
+
+
+
+#### 
+
+
+
+
+ to\_tuple
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/utils/outputs.py#L126)
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ Convert self to a tuple containing all the attributes/keys that are not
+ `None` 
+.
+ 
+
+
+## ImagePipelineOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ ImagePipelineOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/pipeline_utils.py#L110)
+
+
+
+ (
+ 
+
+
+ images
+ 
+ : typing.Union[typing.List[PIL.Image.Image], numpy.ndarray]
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **images** 
+ (
+ `List[PIL.Image.Image]` 
+ or
+ `np.ndarray` 
+ ) —
+List of denoised PIL images of length
+ `batch_size` 
+ or NumPy array of shape
+ `(batch_size, height, width, num_channels)` 
+.
+
+
+ Output class for image pipelines.
+ 
+
+
+## FlaxImagePipelineOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.pipelines.pipeline\_flax\_utils.
+ 
+
+ FlaxImagePipelineOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/pipeline_flax_utils.py#L88)
+
+
+
+ (
+ 
+
+
+ images
+ 
+ : typing.Union[typing.List[PIL.Image.Image], numpy.ndarray]
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **images** 
+ (
+ `List[PIL.Image.Image]` 
+ or
+ `np.ndarray` 
+ ) —
+List of denoised PIL images of length
+ `batch_size` 
+ or NumPy array of shape
+ `(batch_size, height, width, num_channels)` 
+.
+
+
+ Output class for image pipelines.
+ 
+
+
+
+#### 
+
+
+
+
+ replace
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/flax/struct.py#L111)
+
+
+
+ (
+ 
+
+
+ \*\*updates
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ “Returns a new object replacing the specified fields with new values.
+ 
+
+
+## AudioPipelineOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ AudioPipelineOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/pipeline_utils.py#L124)
+
+
+
+ (
+ 
+
+
+ audios
+ 
+ : ndarray
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **audios** 
+ (
+ `np.ndarray` 
+ ) —
+List of denoised audio samples of a NumPy array of shape
+ `(batch_size, num_channels, sample_rate)` 
+.
+
+
+ Output class for audio pipelines.
+ 
+
+
+## ImageTextPipelineOutput
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ diffusers.
+ 
+
+ ImageTextPipelineOutput
+
+
+
+
+[<
+ 
+
+ source
+ 
+
+ >](https://github.com/huggingface/diffusers/blob/v0.23.0/src/diffusers/pipelines/unidiffuser/pipeline_unidiffuser.py#L34)
+
+
+
+ (
+ 
+
+
+ images
+ 
+ : typing.Union[typing.List[PIL.Image.Image], numpy.ndarray, NoneType]
+ 
+
+
+
+
+ text
+ 
+ : typing.Union[typing.List[str], typing.List[typing.List[str]], NoneType]
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **images** 
+ (
+ `List[PIL.Image.Image]` 
+ or
+ `np.ndarray` 
+ ) —
+List of denoised PIL images of length
+ `batch_size` 
+ or NumPy array of shape
+ `(batch_size, height, width, num_channels)` 
+.
+* **text** 
+ (
+ `List[str]` 
+ or
+ `List[List[str]]` 
+ ) —
+List of generated text strings of length
+ `batch_size` 
+ or a list of list of strings whose outer list has
+length
+ `batch_size` 
+.
+
+
+ Output class for joint image-text pipelines.

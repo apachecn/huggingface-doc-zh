@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 无条件图像生成
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,86 @@
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/using-diffusers/unconditional_image_generation>
 
-开始写原始页面的翻译内容
+
+![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)
+
+
+![在 Studio Lab 中打开](https://studiolab.sagemaker.aws/studiolab.svg)
+
+
+无条件图像生成是一项相对简单的任务。该模型仅生成图像 - 没有任何其他上下文（如文本或图像） - 类似于其所训练的训练数据。
+
+
+这
+ [DiffusionPipeline](/docs/diffusers/v0.23.1/en/api/pipelines/overview#diffusers.DiffusionPipeline)
+ 是使用预先训练的扩散系统进行推理的最简单方法。
+
+
+首先创建一个实例
+ [DiffusionPipeline](/docs/diffusers/v0.23.1/en/api/pipelines/overview#diffusers.DiffusionPipeline)
+ 并指定您要下载的管道检查点。
+您可以使用任何 🧨 扩散器
+ [检查点](https://huggingface.co/models?library=diffusers&sort=downloads)
+ 从中心（您将使用的检查点生成蝴蝶图像）。
+
+
+💡 想训练自己的无条件图像生成模型吗？看看训练情况
+ [指南](../training/unconditional_training)
+ 了解如何生成自己的图像。
+
+
+在本指南中，您将使用
+ [DiffusionPipeline](/docs/diffusers/v0.23.1/en/api/pipelines/overview#diffusers.DiffusionPipeline)
+ 用于无条件图像生成
+ [DDPM](https://arxiv.org/abs/2006.11239)
+ :
 
 
 
-注意事项: 
+```
+from diffusers import DiffusionPipeline
 
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+generator = DiffusionPipeline.from_pretrained("anton-l/ddpm-butterflies-128", use_safetensors=True)
 ```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+这
+ [DiffusionPipeline](/docs/diffusers/v0.23.1/en/api/pipelines/overview#diffusers.DiffusionPipeline)
+ 下载并缓存所有建模、标记化和调度组件。
+由于该模型由大约 14 亿个参数组成，因此我们强烈建议在 GPU 上运行它。
+您可以将生成器对象移动到 GPU，就像在 PyTorch 中一样：
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
 
-$$
-\sqrt{w^T*w}
-$$
+```
+generator.to("cuda")
+```
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
+现在您可以使用
+ `发电机`
+ 生成图像：
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+
+```
+image = generator().images[0]
+image
+```
+
+
+输出默认包装成
+ [`PIL.Image`](https://pillow.readthedocs.io/en/stable/reference/Image.html?highlight=image#the-image-class)
+ 目的。
+
+
+您可以通过调用以下命令保存图像：
+
+
+
+```
+image.save("generated\_image.png")
+```
+
+
+尝试下面的空间，并随意使用推理步骤参数，看看它如何影响图像质量！

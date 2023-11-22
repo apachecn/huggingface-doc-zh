@@ -1,53 +1,51 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
+![](https://raw.githubusercontent.com/huggingface/diffusers/77aadfee6a891ab9fcfb780f87c693f7a5beeb8e/docs/source/imgs/diffusers_library.jpg)
 
 
-# Hugging Face 某某页面
+# 扩散器
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
-> 项目地址：<https://huggingface.apachecn.org/docs/diffusers/>
+> 项目地址：<https://huggingface.apachecn.org/docs/diffusers/index>
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/index>
 
-开始写原始页面的翻译内容
+
+🤗 Diffusers 是最先进的预训练扩散模型的首选库，用于生成图像、音频甚至分子的 3D 结构。无论您是在寻找简单的推理解决方案还是想要训练自己的扩散模型，🤗 Diffusers 都是一个支持两者的模块化工具箱。我们的图书馆的设计重点是
+ [可用性优于性能]（概念/哲学#可用性优于性能）
+ ,
+ [简单胜于简单]（概念/哲学#简单胜于简单）
+ ， 和
+ [可定制性优于抽象]（概念/哲学#tweakable-contributorfriend-over-abstraction）
+ 。
 
 
+该库包含三个主要组件：
 
-注意事项: 
 
-1. 代码参考:
+* 只需几行代码即可使用最先进的扩散管道进行推理。 🤗 Diffusers 中有很多管道，查看管道中的表格
+ [概述](api/管道/概述)
+ 获取可用管道及其解决的任务的完整列表。
+* 可互换
+ [噪声调度程序](api/调度程序/概述)
+ 用于平衡生成速度和质量之间的权衡。
+* 预训练
+ [模型](api/模型)
+ 它可以用作构建块，并与调度程序相结合，用于创建您自己的端到端扩散系统。
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
+[教程
+ 
 
-2. 公式参考:
+ 学习开始生成输出、构建自己的扩散系统和训练扩散模型所需的基本技能。如果您是第一次使用 🤗 扩散器，我们建议您从这里开始！](./tutorials/tutorial_overview)
+[操作指南
+ 
 
-1) 无需换行的写法: 
+ 帮助您加载管道、模型和调度程序的实用指南。您还将学习如何使用管道执行特定任务、控制输出的生成方式、优化推理速度以及不同的训练技术。](./using-diffusers/loading_overview)
+[概念指南
+ 
 
-$\sqrt{w^T*w}$
+ 了解图书馆为何如此设计，并详细了解使用图书馆的道德准则和安全实施。](./概念/哲学)
+[参考
+ 
 
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+ 🤗 Diffusers 类和方法如何工作的技术描述。](./api/models/overview)

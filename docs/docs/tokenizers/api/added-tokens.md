@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Added Tokens
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,226 @@
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/api/added-tokens>
 
-开始写原始页面的翻译内容
+
+## AddedToken
 
 
 
-注意事项: 
 
-1. 代码参考:
+### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+ class
+ 
 
-$\sqrt{w^T*w}$
+ tokenizers.
+ 
 
-2) 需要换行的写法：
+ AddedToken
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+ (
+ 
+
+
+ content
+ 
+
+
+ single\_word
+ 
+ = False
+ 
+
+
+
+
+ lstrip
+ 
+ = False
+ 
+
+
+
+
+ rstrip
+ 
+ = False
+ 
+
+
+
+
+ normalized
+ 
+ = True
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **content** 
+ (
+ `str` 
+ ) — The content of the token
+* **single\_word** 
+ (
+ `bool` 
+ , defaults to
+ `False` 
+ ) —
+Defines whether this token should only match single words. If
+ `True` 
+ , this
+token will never match inside of a word. For example the token
+ `ing` 
+ would match
+on
+ `tokenizing` 
+ if this option is
+ `False` 
+ , but not if it is
+ `True` 
+.
+The notion of ”
+ *inside of a word* 
+ ” is defined by the word boundaries pattern in
+regular expressions (ie. the token should start and end with word boundaries).
+* **lstrip** 
+ (
+ `bool` 
+ , defaults to
+ `False` 
+ ) —
+Defines whether this token should strip all potential whitespaces on its left side.
+If
+ `True` 
+ , this token will greedily match any whitespace on its left. For
+example if we try to match the token
+ `[MASK]` 
+ with
+ `lstrip=True` 
+ , in the text
+ `"I saw a [MASK]"` 
+ , we would match on
+ `" [MASK]"` 
+. (Note the space on the left).
+* **rstrip** 
+ (
+ `bool` 
+ , defaults to
+ `False` 
+ ) —
+Defines whether this token should strip all potential whitespaces on its right
+side. If
+ `True` 
+ , this token will greedily match any whitespace on its right.
+It works just like
+ `lstrip` 
+ but on the right.
+* **normalized** 
+ (
+ `bool` 
+ , defaults to
+ `True` 
+ with —meth:
+ *~tokenizers.Tokenizer.add\_tokens* 
+ and
+ `False` 
+ with
+ `add_special_tokens()` 
+ ):
+Defines whether this token should match against the normalized version of the input
+text. For example, with the added token
+ `"yesterday"` 
+ , and a normalizer in charge of
+lowercasing the text, the token could be extract from the input
+ `"I saw a lion Yesterday"` 
+.
+
+
+ Represents a token that can be be added to a
+ [Tokenizer](/docs/tokenizers/v0.13.4.rc2/en/api/tokenizer#tokenizers.Tokenizer) 
+.
+It can have special options that defines the way it should behave.
+ 
+
+
+ property
+ 
+
+ content
+ 
+
+
+ Get the content of this
+ `AddedToken` 
+
+
+
+
+ property
+ 
+
+ lstrip
+ 
+
+
+ Get the value of the
+ `lstrip` 
+ option
+ 
+
+
+
+ property
+ 
+
+ normalized
+ 
+
+
+ Get the value of the
+ `normalized` 
+ option
+ 
+
+
+
+ property
+ 
+
+ rstrip
+ 
+
+
+ Get the value of the
+ `rstrip` 
+ option
+ 
+
+
+
+ property
+ 
+
+ single\_word
+ 
+
+
+ Get the value of the
+ `single_word` 
+ option

@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# Normalizers
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,706 @@
 >
 > 原始地址：<https://huggingface.co/docs/tokenizers/api/normalizers>
 
-开始写原始页面的翻译内容
+
+## BertNormalizer
 
 
 
-注意事项: 
 
-1. 代码参考:
+### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
 
-2. 公式参考:
 
-1) 无需换行的写法: 
+ class
+ 
 
-$\sqrt{w^T*w}$
+ tokenizers.normalizers.
+ 
 
-2) 需要换行的写法：
+ BertNormalizer
 
-$$
-\sqrt{w^T*w}
-$$
 
-3. 图片参考(用图片的实际地址就行):
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+ (
+ 
+
+
+ clean\_text
+ 
+ = True
+ 
+
+
+
+
+ handle\_chinese\_chars
+ 
+ = True
+ 
+
+
+
+
+ strip\_accents
+ 
+ = None
+ 
+
+
+
+
+ lowercase
+ 
+ = True
+ 
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **clean\_text** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to clean the text, by removing any control characters
+and replacing all whitespaces by the classic one.
+* **handle\_chinese\_chars** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to handle chinese chars by putting spaces around them.
+* **strip\_accents** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ ) —
+Whether to strip all accents. If this option is not specified (ie == None),
+then it will be determined by the value for
+ *lowercase* 
+ (as in the original Bert).
+* **lowercase** 
+ (
+ `bool` 
+ ,
+ *optional* 
+ , defaults to
+ `True` 
+ ) —
+Whether to lowercase.
+
+
+ BertNormalizer
+ 
+
+
+
+ Takes care of normalizing raw text before giving it to a Bert model.
+This includes cleaning the text, handling accents, chinese chars and lowercasing
+ 
+
+
+## Lowercase
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Lowercase
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ Lowercase Normalizer
+ 
+
+
+## NFC
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ NFC
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ NFC Unicode Normalizer
+ 
+
+
+## NFD
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ NFD
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ NFD Unicode Normalizer
+ 
+
+
+## NFKC
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ NFKC
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ NFKC Unicode Normalizer
+ 
+
+
+## NFKD
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ NFKD
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ NFKD Unicode Normalizer
+ 
+
+
+## Nmt
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Nmt
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ Nmt normalizer
+ 
+
+
+## Normalizer
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Normalizer
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ Base class for all normalizers
+ 
+
+
+
+ This class is not supposed to be instantiated directly. Instead, any implementation of a
+Normalizer will return an instance of this class when instantiated.
+ 
+
+
+
+#### 
+
+
+
+
+ normalize
+
+
+
+
+ (
+ 
+
+
+ normalized
+ 
+
+
+
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **normalized** 
+ (
+ `NormalizedString` 
+ ) —
+The normalized string on which to apply this
+ [Normalizer](/docs/tokenizers/v0.13.4.rc2/en/api/normalizers#tokenizers.normalizers.Normalizer)
+
+
+ Normalize a
+ `NormalizedString` 
+ in-place
+ 
+
+
+
+ This method allows to modify a
+ `NormalizedString` 
+ to
+keep track of the alignment information. If you just want to see the result
+of the normalization on a raw string, you can use
+ `normalize_str()` 
+
+
+#### 
+
+
+
+
+ normalize\_str
+
+
+
+
+ (
+ 
+
+
+ sequence
+ 
+
+
+
+
+ )
+ 
+
+ →
+ 
+
+
+
+`str` 
+
+
+ Parameters
+ 
+
+
+
+
+* **sequence** 
+ (
+ `str` 
+ ) —
+A string to normalize
+
+
+
+
+ Returns
+ 
+
+
+
+
+`str` 
+
+
+
+
+ A string after normalization
+ 
+
+
+
+ Normalize the given string
+ 
+
+
+
+ This method provides a way to visualize the effect of a
+ [Normalizer](/docs/tokenizers/v0.13.4.rc2/en/api/normalizers#tokenizers.normalizers.Normalizer) 
+ but it does not keep track of the alignment
+information. If you need to get/convert offsets, you can use
+ `normalize()` 
+
+
+## Precompiled
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Precompiled
+
+
+
+
+ (
+ 
+
+
+ precompiled\_charsmap
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ Precompiled normalizer
+Don’t use manually it is used for compatiblity for SentencePiece.
+ 
+
+
+## Replace
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Replace
+
+
+
+
+ (
+ 
+
+
+ pattern
+ 
+
+
+ content
+ 
+
+
+
+
+ )
+ 
+
+
+
+
+ Replace normalizer
+ 
+
+
+## Sequence
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Sequence
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+ Parameters
+ 
+
+
+
+
+* **normalizers** 
+ (
+ `List[Normalizer]` 
+ ) —
+A list of Normalizer to be run as a sequence
+
+
+ Allows concatenating multiple other Normalizer as a Sequence.
+All the normalizers run in sequence in the given order
+ 
+
+
+## Strip
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ Strip
+
+
+
+
+ (
+ 
+
+
+ left
+ 
+ = True
+ 
+
+
+
+
+ right
+ 
+ = True
+ 
+
+
+
+ )
+ 
+
+
+
+
+ Strip normalizer
+ 
+
+
+## StripAccents
+
+
+
+
+### 
+
+
+
+
+ class
+ 
+
+ tokenizers.normalizers.
+ 
+
+ StripAccents
+
+
+
+
+ (
+ 
+
+ )
+ 
+
+
+
+
+ StripAccents normalizer
