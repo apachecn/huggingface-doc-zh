@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 时间序列实用程序
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,122 @@
 >
 > 原始地址：<https://huggingface.co/docs/transformers/internal/time_series_utils>
 
-开始写原始页面的翻译内容
+
+此页面列出了可用于基于时间序列的模型的所有实用函数和类。
+
+
+其中大多数仅在您正在研究时间序列模型的代码或希望添加到分布输出类的集合中时才有用。
+
+
+## 分布式输出
 
 
 
-注意事项: 
 
-1. 代码参考:
+### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
+班级
+ 
 
-2. 公式参考:
+ Transformers.time\_series\_utils。
+ 
 
-1) 无需换行的写法: 
+ 正常输出
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+[<
+ 
 
-$$
-\sqrt{w^T*w}
-$$
+ 来源
+ 
 
-3. 图片参考(用图片的实际地址就行):
+ >](https://github.com/huggingface/transformers/blob/v4.35.2/src/transformers/time_series_utils.py#L179)
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+（
+
+
+ 暗淡
+ 
+ ：整数= 1
+
+
+）
+
+
+正态分布输出类。
+
+
+
+
+### 
+
+
+班级
+ 
+
+ Transformers.time\_series\_utils。
+ 
+
+ 学生T输出
+
+
+[<
+ 
+
+ 来源
+ 
+
+ >](https://github.com/huggingface/transformers/blob/v4.35.2/src/transformers/time_series_utils.py#L164)
+
+
+（
+
+
+ 暗淡
+ 
+ ：整数= 1
+
+
+）
+
+
+Student-T 分布输出类。
+
+
+
+
+### 
+
+
+班级
+ 
+
+ Transformers.time\_series\_utils。
+ 
+
+ 负二项式输出
+
+
+[<
+ 
+
+ 来源
+ 
+
+ >](https://github.com/huggingface/transformers/blob/v4.35.2/src/transformers/time_series_utils.py#L193)
+
+
+（
+
+
+ 暗淡
+ 
+ ：整数= 1
+
+
+）
+
+
+负二项分布输出类。

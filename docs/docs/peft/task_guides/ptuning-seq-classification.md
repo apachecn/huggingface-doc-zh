@@ -266,7 +266,7 @@ training_args = TrainingArguments(
 然后通过模型，
  《训练论据》
  、数据集、分词器、数据整理器和评估函数
- [培训师](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
+ [Trainer](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
  课程，它将为您处理整个培训循环。准备好后，请致电
  [火车](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer.train)
  开始训练！

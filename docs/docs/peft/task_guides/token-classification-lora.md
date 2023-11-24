@@ -410,7 +410,7 @@ training_args = TrainingArguments(
 通过模型，
  《训练论据》
  、数据集、分词器、数据整理器和评估函数
- [培训师](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
+ [Trainer](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
  班级。这
  「教练」
  为您处理训练循环，当您准备好时，请致电

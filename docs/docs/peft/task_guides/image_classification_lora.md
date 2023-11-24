@@ -376,7 +376,7 @@ print_trainable_parameters(lora_model)
 
 
 对于模型微调，使用
- [培训师](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
+ [Trainer](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
  。它接受
 您可以使用几个参数来包装
  [TrainingArguments](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.TrainingArguments)
@@ -452,7 +452,7 @@ def compute\_metrics(eval\_pred):
 
 
 使用排序函数
- [培训师](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
+ [Trainer](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
  收集一批培训和评估示例并准备好
 底层模型可接受的格式。
 
