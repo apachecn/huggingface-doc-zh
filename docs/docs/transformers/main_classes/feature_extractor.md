@@ -1,13 +1,4 @@
-> 翻译任务
-
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
+# 特征提取器
 
 > 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
 >
@@ -15,39 +6,44 @@
 >
 > 原始地址：<https://huggingface.co/docs/transformers/main_classes/feature_extractor>
 
-开始写原始页面的翻译内容
+
+特征提取器负责为音频或视觉模型准备输入特征。这包括从序列中提取特征，例如预处理音频文件以生成 Log-Mel 频谱图特征，从图像中提取特征，例如裁剪图像文件，还包括填充、标准化以及转换为 NumPy、PyTorch 和 TensorFlow 张量。
+
+
+## 特征提取混合
 
 
 
-注意事项: 
 
-1. 代码参考:
+### 
 
-```py
-import torch
 
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
+班级
+ 
 
-2. 公式参考:
+ 变压器。
+ 
 
-1) 无需换行的写法: 
+ 特征提取混合
 
-$\sqrt{w^T*w}$
 
-2) 需要换行的写法：
+[<
+ 
 
-$$
-\sqrt{w^T*w}
-$$
+ 来源
+ 
 
-3. 图片参考(用图片的实际地址就行):
+ >](https://github.com/huggingface/transformers/blob/v4.35.2/src/transformers/feature_extraction_utils.py#L240)
 
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
 
-4. **翻译完后请删除上面所有模版内容就行**
+
+ (
+ 
+
+
+ \*\*夸格
+
+
+
+
+ )
