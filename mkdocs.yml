@@ -34,32 +34,52 @@ nav:
       - "🤗 PEFT": "docs/peft/index.md"
       - "Quicktour": "docs/peft/quicktour.md"
       - "Installation": "docs/peft/install.md"
-    - "Task guides":
-      - "Image classification using LoRA": "docs/peft/task_guides/image_classification_lora.md"
-      - "Prefix tuning for conditional generation": "docs/peft/task_guides/seq2seq-prefix-tuning.md"
-      - "Prompt tuning for causal language modeling": "docs/peft/task_guides/clm-prompt-tuning.md"
-      - "Semantic segmentation using LoRA": "docs/peft/task_guides/semantic_segmentation_lora.md"
-      - "P-tuning for sequence classification": "docs/peft/task_guides/ptuning-seq-classification.md"
-      - "Dreambooth fine-tuning with LoRA": "docs/peft/task_guides/dreambooth_lora.md"
-      - "LoRA for token classification": "docs/peft/task_guides/token-classification-lora.md"
-      - "int8 training for automatic speech recognition": "docs/peft/task_guides/int8-asr.md"
-      - "Semantic similarity with LoRA": "docs/peft/task_guides/semantic-similarity-lora.md"
+    - "Tutorial":
+      - "Configurations and models": "docs/peft/tutorial/peft_model_config.md"
+      - "Integrations": "docs/peft/tutorial/peft_integrations.md"
+    - "PEFT method guides":
+      - "Prompt-based methods": "docs/peft/task_guides/prompt_based_methods.md"
+      - "LoRA methods": "docs/peft/task_guides/lora_based_methods.md"
+      - "IA3": "docs/peft/task_guides/ia3.md"
     - "Developer guides":
-      - "Working with custom models": "docs/peft/developer_guides/custom_models.md"
-      - "PEFT low level API": "docs/peft/developer_guides/low_level_api.md"
-      - "Contributing to PEFT": "docs/peft/developer_guides/contributing.md"
+      - "Model merging": "docs/peft/developer_guides/model_merging.md"
+      - "Quantization": "docs/peft/developer_guides/quantization.md"
+      - "LoRA": "docs/peft/developer_guides/lora.md"
+      - "Custom models": "docs/peft/developer_guides/custom_models.md"
+      - "Adapter injection": "docs/peft/developer_guides/low_level_api.md"
+      - "Mixed adapter types": "docs/peft/developer_guides/mixed_models.md"
+      - "Contribute to PEFT": "docs/peft/developer_guides/contributing.md"
       - "Troubleshooting": "docs/peft/developer_guides/troubleshooting.md"
     - "🤗 Accelerate integrations":
-      - "DeepSpeed": "docs/peft/accelerate/deepspeed-zero3-offload.md"
+      - "DeepSpeed": "docs/peft/accelerate/deepspeed.md"
       - "Fully Sharded Data Parallel": "docs/peft/accelerate/fsdp.md"
     - "Conceptual guides":
-      - "LoRA": "docs/peft/conceptual_guides/lora.md"
-      - "Prompting": "docs/peft/conceptual_guides/prompting.md"
+      - "Adapters": "docs/peft/conceptual_guides/adapter.md"
+      - "Soft prompts": "docs/peft/conceptual_guides/prompting.md"
       - "IA3": "docs/peft/conceptual_guides/ia3.md"
-    - "Reference":
-      - "PEFT model": "docs/peft/package_reference/peft_model.md"
-      - "Configuration": "docs/peft/package_reference/config.md"
-      - "Tuners": "docs/peft/package_reference/tuners.md"
+    - "API reference":
+      - "MAIN CLASSES":
+        - "AutoPeftModel": "https://huggingface.co/docs/peft/package_reference/auto_class"
+        - "PEFT model": "https://huggingface.co/docs/peft/package_reference/peft_model"
+        - "PEFT types": "https://huggingface.co/docs/peft/package_reference/peft_types"
+        - "Configuration": "https://huggingface.co/docs/peft/package_reference/config"
+        - "Tuner": "https://huggingface.co/docs/peft/package_reference/tuners"
+      - "ADAPTERS":
+        - "AdaLoRA": "https://huggingface.co/docs/peft/package_reference/adalora"
+        - "IA3": "https://huggingface.co/docs/peft/package_reference/ia3"
+        - "Llama-Adapter": "https://huggingface.co/docs/peft/package_reference/llama_adapter"
+        - "LoHa": "https://huggingface.co/docs/peft/package_reference/loha"
+        - "LoKr": "https://huggingface.co/docs/peft/package_reference/lokr"
+        - "LoRA": "https://huggingface.co/docs/peft/package_reference/lora"
+        - "LyCORIS": "https://huggingface.co/docs/peft/package_reference/adapter_utils"
+        - "Multitask Prompt Tuning": "https://huggingface.co/docs/peft/package_reference/multitask_prompt_tuning"
+        - "OFT": "https://huggingface.co/docs/peft/package_reference/oft"
+        - "Polytropon": "https://huggingface.co/docs/peft/package_reference/poly"
+        - "P-tuning": "https://huggingface.co/docs/peft/package_reference/p_tuning"
+        - "Prefix tuning": "https://huggingface.co/docs/peft/package_reference/prefix_tuning"
+        - "Prompt tuning": "https://huggingface.co/docs/peft/package_reference/prompt_tuning"
+      - "Utilities":
+        - "Model merge": "https://huggingface.co/docs/peft/package_reference/merge_utils"
   - "diffusers":
     - "Get started":
       - "🧨 Diffusers": "docs/diffusers/index.md"
