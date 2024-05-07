@@ -152,8 +152,8 @@ nav:
         - "OpenVINO": "docs/diffusers/optimization/open_vino.md"
         - "Core ML": "docs/diffusers/optimization/coreml.md"
       - "Optimized hardware":
-      - "Metal Performance Shaders (MPS)": "docs/diffusers/optimization/mps.md"
-      - "Habana Gaudi": "docs/diffusers/optimization/habana.md"
+        - "Metal Performance Shaders (MPS)": "docs/diffusers/optimization/mps.md"
+        - "Habana Gaudi": "docs/diffusers/optimization/habana.md"
     - "Conceptual Guides":
       - "Philosophy": "docs/diffusers/conceptual/philosophy.md"
       - "Controlled generation": "docs/diffusers/using-diffusers/controlling_generation.md"
