@@ -107,7 +107,7 @@ model.print_trainable_parameters()
 
 
 就是这样🎉！现在您可以使用 🤗 Transformers 训练模型
- [培训师](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
+ [Trainer](https://huggingface.co/docs/transformers/v4.35.0/en/main_classes/trainer#transformers.Trainer)
  、🤗 加速或任何自定义 PyTorch 训练循环。
 
 
