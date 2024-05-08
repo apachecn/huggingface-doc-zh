@@ -1,6 +1,6 @@
 # PEFT
 
-> 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
+> 译者：[糖醋鱼](https://github.com/now-101)
 >
 > 项目地址：<https://huggingface.apachecn.org/docs/peft/index>
 >
