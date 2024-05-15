@@ -31,12 +31,12 @@ LCM-LoRA 可用于 [stable-diffusion-v1-5](https://huggingface.co/runwayml/stabl
 
 本指南介绍如何使用 LCM-LoRA 对
 
-+   文本到图像
-+   图像到图像
++   文生图（text-to-image）
++   图生图（image-to-image）
 +   结合风格化的 LoRA
-+   ControlNet/T2I-适配器
-+   修复
-+   AnimateDiff （动画差异）
++   ControlNet/T2I-Adapter
++   修复（inpainting）
++   动画变化 （AnimateDiff）
 
 在阅读本指南之前，我们将了解使用 LCM-LoRA 执行推理的一般工作流程。 LCM-LoRA 与其他稳定扩散 LoRA 类似，因此它们可以与任何支持 LoRA 的 [DiffusionPipeline](/docs/diffusers/v0.27.2/en/api/pipelines/overview#diffusers.DiffusionPipeline) 一起使用。
 
@@ -195,7 +195,7 @@ image
 
 ### [](#controlnet)ControlNet
 
-在此示例中，我们将使用 SD-v1-5 模型和 SD-v1-5 的 LCM-LoRA 以及精明的 ControlNet。
+在此示例中，我们将使用 SD-v1-5 模型和 SD-v1-5 的 LCM-LoRA 以及canny  ControlNet。
 
 ```py
 import torch
@@ -314,7 +314,7 @@ make\_image\_grid(\[canny\_image, image\], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdxl_t2iadapter.png)
 
-## [](#inpainting)修复
+## [](#inpainting)修复（Inpainting）
 
 LCM-LoRA也可用于修复。
 
