@@ -38,22 +38,22 @@ LCM 蒸馏模型可用于 [stable-diffusion-v1-5](https://huggingface.co/runwaym
 from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, LCMScheduler
 import torch
 
-unet = UNet2DConditionModel.from\_pretrained(
+unet = UNet2DConditionModel.from_pretrained(
     "latent-consistency/lcm-sdxl",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 )
-pipe = StableDiffusionXLPipeline.from\_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", unet=unet, torch\_dtype=torch.float16, variant="fp16",
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", unet=unet, torch_dtype=torch.float16, variant="fp16",
 ).to("cuda")
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
 prompt = "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k"
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
-    prompt=prompt, num\_inference\_steps=4, generator=generator, guidance\_scale=8.0
-).images\[0\]
+    prompt=prompt, num_inference_steps=4, generator=generator, guidance_scale=8.0
+).images[0]
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_full_sdxl_t2i.png)
 
@@ -72,38 +72,38 @@ LCM 也可以应用于图像到图像任务。在此示例中，我们将使用 
 ```py
 import torch
 from diffusers import AutoPipelineForImage2Image, UNet2DConditionModel, LCMScheduler
-from diffusers.utils import make\_image\_grid, load\_image
+from diffusers.utils import make_image_grid, load_image
 
-unet = UNet2DConditionModel.from\_pretrained(
-    "SimianLuo/LCM\_Dreamshaper\_v7",
+unet = UNet2DConditionModel.from_pretrained(
+    "SimianLuo/LCM_Dreamshaper_v7",
     subfolder="unet",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
 )
 
-pipe = AutoPipelineForImage2Image.from\_pretrained(
+pipe = AutoPipelineForImage2Image.from_pretrained(
     "Lykon/dreamshaper-7",
     unet=unet,
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 ).to("cuda")
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# prepare image
+# prepare image
 url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/img2img-init.png"
-init\_image = load\_image(url)
+init_image = load_image(url)
 prompt = "Astronauts in a jungle, cold color palette, muted colors, detailed, 8k"
 
-\# pass prompt and image to pipeline
-generator = torch.manual\_seed(0)
+# pass prompt and image to pipeline
+generator = torch.manual_seed(0)
 image = pipe(
     prompt,
-    image=init\_image,
-    num\_inference\_steps=4,
-    guidance\_scale=7.5,
+    image=init_image,
+    num_inference_steps=4,
+    guidance_scale=7.5,
     strength=0.5,
     generator=generator
-).images\[0\]
-make\_image\_grid(\[init\_image, image\], rows=1, cols=2)
+).images[0]
+make_image_grid([init_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_full_sdv1-5_i2i.png)
 
@@ -117,25 +117,22 @@ LCM 可以与其他样式的 LoRA 一起使用，只需很少的步骤 （4-8）
 from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, LCMScheduler
 import torch
 
-unet = UNet2DConditionModel.from\_pretrained(
+unet = UNet2DConditionModel.from_pretrained(
     "latent-consistency/lcm-sdxl",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 )
-pipe = StableDiffusionXLPipeline.from\_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", unet=unet, torch\_dtype=torch.float16, variant="fp16",
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", unet=unet, torch_dtype=torch.float16, variant="fp16",
 ).to("cuda")
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-pipe.load\_lora\_weights("TheLastBen/Papercut\_SDXL", weight\_name="papercut.safetensors", adapter\_name="papercut")
+prompt = "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k"
 
-prompt = "papercut, a cute fox"
-
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
-    prompt=prompt, num\_inference\_steps=4, generator=generator, guidance\_scale=8.0
-).images\[0\]
-image
+    prompt=prompt, num_inference_steps=4, generator=generator, guidance_scale=8.0
+).images[0]
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_full_sdx_lora_mix.png)
 
@@ -154,41 +151,41 @@ import numpy as np
 from PIL import Image
 
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, LCMScheduler
-from diffusers.utils import load\_image, make\_image\_grid
+from diffusers.utils import load_image, make_image_grid
 
-image = load\_image(
-    "https://hf.co/datasets/huggingface/documentation-images/resolve/main/diffusers/input\_image\_vermeer.png"
+image = load_image(
+    "https://hf.co/datasets/huggingface/documentation-images/resolve/main/diffusers/input_image_vermeer.png"
 ).resize((512, 512))
 
 image = np.array(image)
 
-low\_threshold = 100
-high\_threshold = 200
+low_threshold = 100
+high_threshold = 200
 
-image = cv2.Canny(image, low\_threshold, high\_threshold)
-image = image\[:, :, None\]
-image = np.concatenate(\[image, image, image\], axis=2)
-canny\_image = Image.fromarray(image)
+image = cv2.Canny(image, low_threshold, high_threshold)
+image = image[:, :, None]
+image = np.concatenate([image, image, image], axis=2)
+canny_image = Image.fromarray(image)
 
-controlnet = ControlNetModel.from\_pretrained("lllyasviel/sd-controlnet-canny", torch\_dtype=torch.float16)
-pipe = StableDiffusionControlNetPipeline.from\_pretrained(
-    "SimianLuo/LCM\_Dreamshaper\_v7",
+controlnet = ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-canny", torch_dtype=torch.float16)
+pipe = StableDiffusionControlNetPipeline.from_pretrained(
+    "SimianLuo/LCM_Dreamshaper_v7",
     controlnet=controlnet,
-    torch\_dtype=torch.float16,
-    safety\_checker=None,
+    torch_dtype=torch.float16,
+    safety_checker=None,
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
     "the mona lisa",
-    image=canny\_image,
-    num\_inference\_steps=4,
+    image=canny_image,
+    num_inference_steps=4,
     generator=generator,
-).images\[0\]
-make\_image\_grid(\[canny\_image, image\], rows=1, cols=2)
+).images[0]
+make_image_grid([canny_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_full_sdv1-5_controlnet.png)
 
@@ -205,56 +202,56 @@ import numpy as np
 from PIL import Image
 
 from diffusers import StableDiffusionXLAdapterPipeline, UNet2DConditionModel, T2IAdapter, LCMScheduler
-from diffusers.utils import load\_image, make\_image\_grid
+from diffusers.utils import load_image, make_image_grid
 
-\# Prepare image
-\# Detect the canny map in low resolution to avoid high-frequency details
-image = load\_image(
-    "https://huggingface.co/Adapter/t2iadapter/resolve/main/figs\_SDXLV1.0/org\_canny.jpg"
+# Prepare image
+# Detect the canny map in low resolution to avoid high-frequency details
+image = load_image(
+    "https://huggingface.co/Adapter/t2iadapter/resolve/main/figs_SDXLV1.0/org_canny.jpg"
 ).resize((384, 384))
 
 image = np.array(image)
 
-low\_threshold = 100
-high\_threshold = 200
+low_threshold = 100
+high_threshold = 200
 
-image = cv2.Canny(image, low\_threshold, high\_threshold)
-image = image\[:, :, None\]
-image = np.concatenate(\[image, image, image\], axis=2)
-canny\_image = Image.fromarray(image).resize((1024, 1216))
+image = cv2.Canny(image, low_threshold, high_threshold)
+image = image[:, :, None]
+image = np.concatenate([image, image, image], axis=2)
+canny_image = Image.fromarray(image).resize((1024, 1216))
 
-\# load adapter
-adapter = T2IAdapter.from\_pretrained("TencentARC/t2i-adapter-canny-sdxl-1.0", torch\_dtype=torch.float16, varient="fp16").to("cuda")
+# load adapter
+adapter = T2IAdapter.from_pretrained("TencentARC/t2i-adapter-canny-sdxl-1.0", torch_dtype=torch.float16, varient="fp16").to("cuda")
 
-unet = UNet2DConditionModel.from\_pretrained(
+unet = UNet2DConditionModel.from_pretrained(
     "latent-consistency/lcm-sdxl",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 )
-pipe = StableDiffusionXLAdapterPipeline.from\_pretrained(
+pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
     unet=unet,
     adapter=adapter,
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16", 
 ).to("cuda")
 
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
 prompt = "Mystical fairy in real, magic, 4k picture, high quality"
-negative\_prompt = "extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured"
+negative_prompt = "extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured"
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
     prompt=prompt,
-    negative\_prompt=negative\_prompt,
-    image=canny\_image,
-    num\_inference\_steps=4,
-    guidance\_scale=5,
-    adapter\_conditioning\_scale=0.8, 
-    adapter\_conditioning\_factor=1,
+    negative_prompt=negative_prompt,
+    image=canny_image,
+    num_inference_steps=4,
+    guidance_scale=5,
+    adapter_conditioning_scale=0.8, 
+    adapter_conditioning_factor=1,
     generator=generator,
-).images\[0\]
-grid = make\_image\_grid(\[canny\_image, image\], rows=1, cols=2)
+).images[0]
+grid = make_image_grid([canny_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_full_sdxl_t2iadapter.png)

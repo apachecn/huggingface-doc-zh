@@ -62,31 +62,31 @@ pip install -U peft
 import torch
 from diffusers import DiffusionPipeline, LCMScheduler
 
-pipe = DiffusionPipeline.from\_pretrained(
+pipe = DiffusionPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
     variant="fp16",
-    torch\_dtype=torch.float16
+    torch_dtype=torch.float16
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdxl")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl")
 
 prompt = "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k"
 
-generator = torch.manual\_seed(42)
+generator = torch.manual_seed(42)
 image = pipe(
-    prompt=prompt, num\_inference\_steps=4, generator=generator, guidance\_scale=1.0
-).images\[0\]
+    prompt=prompt, num_inference_steps=4, generator=generator, guidance_scale=1.0
+).images[0]
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdxl_t2i.png)
 
 请注意，我们仅使用 4 个步骤进行生成，这比通常用于标准 SDXL 的步骤要少得多。
 
->您可能已经注意到，我们设置了 ，它禁用了 classifer-free-guidance。这是因为 LCM-LoRA 是在指导下训练的，因此在这种情况下，批处理大小不必加倍。这导致了更快的推理时间，缺点是负面提示对去噪过程没有任何影响。`guidance_scale=1.0`
->您还可以将指导与 LCM-LoRA 一起使用，但由于训练的性质，模型对值非常敏感，高值可能会导致生成的图像中出现伪影。在我们的实验中，我们发现最佳值在 \[1.0， 2.0\] 的范围内。`guidance_scale`
+>您可能已经注意到，我们设置了`guidance_scale=1.0`，它禁用了 classifer-free-guidance。这是因为 LCM-LoRA 是在指导下训练的，因此在这种情况下，批处理大小不必加倍。这导致了更快的推理时间，缺点是负面提示对去噪过程没有任何影响。
+>您还可以将指导与 LCM-LoRA 一起使用，但由于训练的性质，模型对`guidance_scale`值非常敏感，高值可能会导致生成的图像中出现伪影。在我们的实验中，我们发现最佳值在 \[1.0， 2.0\] 的范围内。
 
 ### [](#inference-with-a-fine-tuned-model)使用微调模型进行推理
 
@@ -95,24 +95,24 @@ image = pipe(
 ```py
 from diffusers import DiffusionPipeline, LCMScheduler
 
-pipe = DiffusionPipeline.from\_pretrained(
+pipe = DiffusionPipeline.from_pretrained(
     "Linaqruf/animagine-xl",
     variant="fp16",
-    torch\_dtype=torch.float16
+    torch_dtype=torch.float16
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdxl")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl")
 
 prompt = "face focus, cute, masterpiece, best quality, 1girl, green hair, sweater, looking at viewer, upper body, beanie, outdoors, night, turtleneck"
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
-    prompt=prompt, num\_inference\_steps=4, generator=generator, guidance\_scale=1.0
-).images\[0\]
+    prompt=prompt, num_inference_steps=4, generator=generator, guidance_scale=1.0
+).images[0]
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdxl_t2i_finetuned.png)
 
@@ -123,42 +123,42 @@ LCM-LoRA 也可以应用于图像到图像任务。让我们看看如何使用 L
 ```py
 import torch
 from diffusers import AutoPipelineForImage2Image, LCMScheduler
-from diffusers.utils import make\_image\_grid, load\_image
+from diffusers.utils import make_image_grid, load_image
 
-pipe = AutoPipelineForImage2Image.from\_pretrained(
+pipe = AutoPipelineForImage2Image.from_pretrained(
     "Lykon/dreamshaper-7",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdv1-5")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdv1-5")
 
-\# prepare image
+# prepare image
 url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/img2img-init.png"
-init\_image = load\_image(url)
+init_image = load_image(url)
 prompt = "Astronauts in a jungle, cold color palette, muted colors, detailed, 8k"
 
-\# pass prompt and image to pipeline
-generator = torch.manual\_seed(0)
+# pass prompt and image to pipeline
+generator = torch.manual_seed(0)
 image = pipe(
     prompt,
-    image=init\_image,
-    num\_inference\_steps=4,
-    guidance\_scale=1,
+    image=init_image,
+    num_inference_steps=4,
+    guidance_scale=1,
     strength=0.6,
     generator=generator
-).images\[0\]
-make\_image\_grid(\[init\_image, image\], rows=1, cols=2)
+).images[0]
+make_image_grid([init_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdv1-5_i2i.png)
 
 >您可以根据提示和提供的图像获得不同的结果。为了获得最佳结果，我们建议对`num_inference_steps`、`strength`和`guidance_scale`参数尝试的不同值，然后选择最佳值。
 
-## [](#combine-with-styled-loras)与样式化的 LoRA 结合使用
+## [](#combine-with-styled-loras)结合风格化的 LoRA
 
 LCM-LoRA 可以与其他 LoRA 结合使用，只需很少的步骤即可生成样式化图像 （4-8）。在以下示例中，我们将 LCM-LoRA 与[papercut LoRA](TheLastBen/Papercut_SDXL) 一起使用。 要了解有关如何组合 LoRA 的更多信息，请参阅[本指南](https://huggingface.co/docs/diffusers/tutorials/using_peft_for_inference#combine-multiple-adapters)。
 
@@ -166,25 +166,25 @@ LCM-LoRA 可以与其他 LoRA 结合使用，只需很少的步骤即可生成�
 import torch
 from diffusers import DiffusionPipeline, LCMScheduler
 
-pipe = DiffusionPipeline.from\_pretrained(
+pipe = DiffusionPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
     variant="fp16",
-    torch\_dtype=torch.float16
+    torch_dtype=torch.float16
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LoRAs
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdxl", adapter\_name="lcm")
-pipe.load\_lora\_weights("TheLastBen/Papercut\_SDXL", weight\_name="papercut.safetensors", adapter\_name="papercut")
+# load LoRAs
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl", adapter_name="lcm")
+pipe.load_lora_weights("TheLastBen/Papercut_SDXL", weight_name="papercut.safetensors", adapter_name="papercut")
 
-\# Combine LoRAs
-pipe.set\_adapters(\["lcm", "papercut"\], adapter\_weights=\[1.0, 0.8\])
+# Combine LoRAs
+pipe.set_adapters(["lcm", "papercut"], adapter_weights=[1.0, 0.8])
 
 prompt = "papercut, a cute fox"
-generator = torch.manual\_seed(0)
-image = pipe(prompt, num\_inference\_steps=4, guidance\_scale=1, generator=generator).images\[0\]
+generator = torch.manual_seed(0)
+image = pipe(prompt, num_inference_steps=4, guidance_scale=1, generator=generator).images[0]
 image
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdx_lora_mix.png)
@@ -204,48 +204,48 @@ import numpy as np
 from PIL import Image
 
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, LCMScheduler
-from diffusers.utils import load\_image
+from diffusers.utils import load_image
 
-image = load\_image(
-    "https://hf.co/datasets/huggingface/documentation-images/resolve/main/diffusers/input\_image\_vermeer.png"
+image = load_image(
+    "https://hf.co/datasets/huggingface/documentation-images/resolve/main/diffusers/input_image_vermeer.png"
 ).resize((512, 512))
 
 image = np.array(image)
 
-low\_threshold = 100
-high\_threshold = 200
+low_threshold = 100
+high_threshold = 200
 
-image = cv2.Canny(image, low\_threshold, high\_threshold)
-image = image\[:, :, None\]
-image = np.concatenate(\[image, image, image\], axis=2)
-canny\_image = Image.fromarray(image)
+image = cv2.Canny(image, low_threshold, high_threshold)
+image = image[:, :, None]
+image = np.concatenate([image, image, image], axis=2)
+canny_image = Image.fromarray(image)
 
-controlnet = ControlNetModel.from\_pretrained("lllyasviel/sd-controlnet-canny", torch\_dtype=torch.float16)
-pipe = StableDiffusionControlNetPipeline.from\_pretrained(
+controlnet = ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-canny", torch_dtype=torch.float16)
+pipe = StableDiffusionControlNetPipeline.from_pretrained(
     "runwayml/stable-diffusion-v1-5",
     controlnet=controlnet,
-    torch\_dtype=torch.float16,
-    safety\_checker=None,
+    torch_dtype=torch.float16,
+    safety_checker=None,
     variant="fp16"
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdv1-5")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdv1-5")
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
     "the mona lisa",
-    image=canny\_image,
-    num\_inference\_steps=4,
-    guidance\_scale=1.5,
-    controlnet\_conditioning\_scale=0.8,
-    cross\_attention\_kwargs={"scale": 1},
+    image=canny_image,
+    num_inference_steps=4,
+    guidance_scale=1.5,
+    controlnet_conditioning_scale=0.8,
+    cross_attention_kwargs={"scale": 1},
     generator=generator,
-).images\[0\]
-make\_image\_grid(\[canny\_image, image\], rows=1, cols=2)
+).images[0]
+make_image_grid([canny_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdv1-5_controlnet.png)
 
@@ -262,55 +262,55 @@ import numpy as np
 from PIL import Image
 
 from diffusers import StableDiffusionXLAdapterPipeline, T2IAdapter, LCMScheduler
-from diffusers.utils import load\_image, make\_image\_grid
+from diffusers.utils import load_image, make_image_grid
 
-\# Prepare image
-\# Detect the canny map in low resolution to avoid high-frequency details
-image = load\_image(
-    "https://huggingface.co/Adapter/t2iadapter/resolve/main/figs\_SDXLV1.0/org\_canny.jpg"
+# Prepare image
+# Detect the canny map in low resolution to avoid high-frequency details
+image = load_image(
+    "https://huggingface.co/Adapter/t2iadapter/resolve/main/figs_SDXLV1.0/org_canny.jpg"
 ).resize((384, 384))
 
 image = np.array(image)
 
-low\_threshold = 100
-high\_threshold = 200
+low_threshold = 100
+high_threshold = 200
 
-image = cv2.Canny(image, low\_threshold, high\_threshold)
-image = image\[:, :, None\]
-image = np.concatenate(\[image, image, image\], axis=2)
-canny\_image = Image.fromarray(image).resize((1024, 1024))
+image = cv2.Canny(image, low_threshold, high_threshold)
+image = image[:, :, None]
+image = np.concatenate([image, image, image], axis=2)
+canny_image = Image.fromarray(image).resize((1024, 1024))
 
-\# load adapter
-adapter = T2IAdapter.from\_pretrained("TencentARC/t2i-adapter-canny-sdxl-1.0", torch\_dtype=torch.float16, varient="fp16").to("cuda")
+# load adapter
+adapter = T2IAdapter.from_pretrained("TencentARC/t2i-adapter-canny-sdxl-1.0", torch_dtype=torch.float16, varient="fp16").to("cuda")
 
-pipe = StableDiffusionXLAdapterPipeline.from\_pretrained(
+pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", 
     adapter=adapter,
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16", 
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdxl")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl")
 
 prompt = "Mystical fairy in real, magic, 4k picture, high quality"
-negative\_prompt = "extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured"
+negative_prompt = "extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured"
 
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
     prompt=prompt,
-    negative\_prompt=negative\_prompt,
-    image=canny\_image,
-    num\_inference\_steps=4,
-    guidance\_scale=1.5, 
-    adapter\_conditioning\_scale=0.8, 
-    adapter\_conditioning\_factor=1,
+    negative_prompt=negative_prompt,
+    image=canny_image,
+    num_inference_steps=4,
+    guidance_scale=1.5, 
+    adapter_conditioning_scale=0.8, 
+    adapter_conditioning_factor=1,
     generator=generator,
-).images\[0\]
-make\_image\_grid(\[canny\_image, image\], rows=1, cols=2)
+).images[0]
+make_image_grid([canny_image, image], rows=1, cols=2)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdxl_t2iadapter.png)
 
@@ -321,36 +321,36 @@ LCM-LoRA也可用于修复。
 ```py
 import torch
 from diffusers import AutoPipelineForInpainting, LCMScheduler
-from diffusers.utils import load\_image, make\_image\_grid
+from diffusers.utils import load_image, make_image_grid
 
-pipe = AutoPipelineForInpainting.from\_pretrained(
+pipe = AutoPipelineForInpainting.from_pretrained(
     "runwayml/stable-diffusion-inpainting",
-    torch\_dtype=torch.float16,
+    torch_dtype=torch.float16,
     variant="fp16",
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdv1-5")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdv1-5")
 
-\# load base and mask image
-init\_image = load\_image("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/inpaint.png")
-mask\_image = load\_image("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/inpaint\_mask.png")
+# load base and mask image
+init_image = load_image("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/inpaint.png")
+mask_image = load_image("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/inpaint_mask.png")
 
-\# generator = torch.Generator("cuda").manual\_seed(92)
+# generator = torch.Generator("cuda").manual_seed(92)
 prompt = "concept art digital painting of an elven castle, inspired by lord of the rings, highly detailed, 8k"
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 image = pipe(
     prompt=prompt,
-    image=init\_image,
-    mask\_image=mask\_image,
+    image=init_image,
+    mask_image=mask_image,
     generator=generator,
-    num\_inference\_steps=4,
-    guidance\_scale=4, 
-).images\[0\]
-make\_image\_grid(\[init\_image, mask\_image, image\], rows=1, cols=3)
+    num_inference_steps=4,
+    guidance_scale=4, 
+).images[0]
+make_image_grid([init_image, mask_image, image], rows=1, cols=3)
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdv1-5_inpainting.png)
 
@@ -361,33 +361,33 @@ make\_image\_grid(\[init\_image, mask\_image, image\], rows=1, cols=3)
 ```py
 import torch
 from diffusers import MotionAdapter, AnimateDiffPipeline, DDIMScheduler, LCMScheduler
-from diffusers.utils import export\_to\_gif
+from diffusers.utils import export_to_gif
 
-adapter = MotionAdapter.from\_pretrained("diffusers/animatediff-motion-adapter-v1-5")
-pipe = AnimateDiffPipeline.from\_pretrained(
-    "frankjoshua/toonyou\_beta6",
-    motion\_adapter=adapter,
+adapter = MotionAdapter.from_pretrained("diffusers/animatediff-motion-adapter-v1-5")
+pipe = AnimateDiffPipeline.from_pretrained(
+    "frankjoshua/toonyou_beta6",
+    motion_adapter=adapter,
 ).to("cuda")
 
-\# set scheduler
-pipe.scheduler = LCMScheduler.from\_config(pipe.scheduler.config)
+# set scheduler
+pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-\# load LCM-LoRA
-pipe.load\_lora\_weights("latent-consistency/lcm-lora-sdv1-5", adapter\_name="lcm")
-pipe.load\_lora\_weights("guoyww/animatediff-motion-lora-zoom-in", weight\_name="diffusion\_pytorch\_model.safetensors", adapter\_name="motion-lora")
+# load LCM-LoRA
+pipe.load_lora_weights("latent-consistency/lcm-lora-sdv1-5", adapter_name="lcm")
+pipe.load_lora_weights("guoyww/animatediff-motion-lora-zoom-in", weight_name="diffusion_pytorch_model.safetensors", adapter_name="motion-lora")
 
-pipe.set\_adapters(\["lcm", "motion-lora"\], adapter\_weights=\[0.55, 1.2\])
+pipe.set_adapters(["lcm", "motion-lora"], adapter_weights=[0.55, 1.2])
 
 prompt = "best quality, masterpiece, 1girl, looking at viewer, blurry background, upper body, contemporary, dress"
-generator = torch.manual\_seed(0)
+generator = torch.manual_seed(0)
 frames = pipe(
     prompt=prompt,
-    num\_inference\_steps=5,
-    guidance\_scale=1.25,
-    cross\_attention\_kwargs={"scale": 1},
-    num\_frames=24,
+    num_inference_steps=5,
+    guidance_scale=1.25,
+    cross_attention_kwargs={"scale": 1},
+    num_frames=24,
     generator=generator
-).frames\[0\]
-export\_to\_gif(frames, "animation.gif")
+).frames[0]
+export_to_gif(frames, "animation.gif")
 ```
 ![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/lcm/lcm_sdv1-5_animatediff.gif)
