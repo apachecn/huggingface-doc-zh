@@ -1,6 +1,6 @@
 # [](#wuerstchen) Wuerstchen
 
-> 译者：译者：[疾风兔X](https://github.com/jifnegtu)
+> 译者：[疾风兔X](https://github.com/jifnegtu)
 >
 > 项目地址：<https://huggingface.apachecn.org/docs/diffusers/training/wuerstchen>
 >
