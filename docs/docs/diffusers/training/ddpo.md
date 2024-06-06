@@ -1,53 +1,13 @@
-> 翻译任务
+# [](#reinforcement-learning-training-with-ddpo)使用 DDPO 进行强化学习训练
 
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
-
-> 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
+> 译者：[疾风兔X](https://github.com/jifnegtu)
 >
 > 项目地址：<https://huggingface.apachecn.org/docs/diffusers/training/ddpo>
 >
 > 原始地址：<https://huggingface.co/docs/diffusers/training/ddpo>
 
-开始写原始页面的翻译内容
 
 
+您可以通过使用 🤗 TRL 库和 🤗 Diffusers 进行强化学习来精细调整奖励函数的 Stable Diffusion。这是通过Black等人在[《利用强化学习训练扩散模型》（Training Diffusion Models with Reinforcement Learning）](https://arxiv.org/abs/2305.13301)中引入的去噪扩散策略优化（DDPO）算法完成的，该算法在🤗 TRL中使用[DDPOTrainer](https://huggingface.co/docs/trl/v0.8.6/en/trainer#trl.DDPOTrainer)实现。
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
-```
-
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
+有关更多信息，请查看 [DDPOTrainer](https://huggingface.co/docs/trl/v0.8.6/en/trainer#trl.DDPOTrainer)的API参考文档 和 [使用TRL与DDPO微调Stable Diffusion模型（Finetune Stable Diffusion Models with DDPO via TRL）](https://huggingface.co/blog/trl-ddpo) 博客文章。
