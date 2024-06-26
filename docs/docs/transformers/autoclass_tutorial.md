@@ -18,6 +18,7 @@
 * 加载预训练的模型。
 * 将模型作为主干网络加载。
 
+
 ```py
 >>> from transformers import AutoTokenizer
 
