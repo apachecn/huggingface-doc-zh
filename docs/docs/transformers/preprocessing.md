@@ -25,5 +25,5 @@ pip install datasets
 
 **自然语言处理**
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Yffk5aydLzg?si=imtCeOHYnybF05pc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+<video src="https://youtu.be/Yffk5aydLzg" controls></video>
