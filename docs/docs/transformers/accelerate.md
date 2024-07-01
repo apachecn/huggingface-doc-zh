@@ -1,53 +1,18 @@
-> 翻译任务
+# 使用 🤗 Accelerate 进行分布式训练
 
-* 目前该页面无人翻译，期待你的加入
-* 翻译奖励: <https://github.com/orgs/apachecn/discussions/243>
-* 任务认领: <https://github.com/apachecn/huggingface-doc-zh/discussions/1>
-
-请参考这个模版来写内容:
-
-
-# Hugging Face 某某页面
-
-> 译者：[片刻小哥哥](https://github.com/jiangzhonglian)
+> 译者：[BrightLi](https://github.com/brightli)
 >
 > 项目地址：<https://huggingface.apachecn.org/docs/transformers/accelerate>
 >
 > 原始地址：<https://huggingface.co/docs/transformers/accelerate>
 
-开始写原始页面的翻译内容
+随着模型变得越来越大，并行计算已经成为一种在有限的硬件上训练更大模型和加速训练速度几个数量级的策略。在 Hugging Face，我们创建了 🤗 [Accelerate](https://huggingface.co/docs/accelerate)库来帮助用户轻松地在任何类型的分布式设置上训练一个 🤗 Transformers 模型，无论是一台机器上的多个 GPU 还是多台机器上的多个 GPU。在本教程中，了解如何自定义你的原生 PyTorch 训练循环以启用分布式环境的训练。
 
+**设置**
 
+首先通过安装 🤗 Accelerate 开始：
 
-注意事项: 
-
-1. 代码参考:
-
-```py
-import torch
-
-x = torch.ones(5)  # input tensor
-y = torch.zeros(3)  # expected output
-w = torch.randn(5, 3, requires_grad=True)
-b = torch.randn(3, requires_grad=True)
-z = torch.matmul(x, w)+b
-loss = torch.nn.functional.binary_cross_entropy_with_logits(z, y)
+```shell
+pip install accelerate
 ```
 
-2. 公式参考:
-
-1) 无需换行的写法: 
-
-$\sqrt{w^T*w}$
-
-2) 需要换行的写法：
-
-$$
-\sqrt{w^T*w}
-$$
-
-3. 图片参考(用图片的实际地址就行):
-
-<img src='http://data.apachecn.org/img/logo/logo_green.png' width=20% />
-
-4. **翻译完后请删除上面所有模版内容就行**
